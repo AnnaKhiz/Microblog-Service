@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  div.content
+    form(method="POST")#form.form
+      h3.form__title Please register filling the form below
+      div.form__block
+        label(for="login").form__label Enter your login
+        input#login(placeholder="Enter login")
+
+      div.form__block
+        label(for="password").form__label Enter your password
+        input#password(placeholder="Enter password")
+      button#btn-register.form__button Register

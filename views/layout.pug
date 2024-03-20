@@ -1,0 +1,20 @@
+mixin link(link, item)
+  a(href=link)= item
+
+html
+  head
+    link(rel="stylesheet" href="/public/style.css")
+    title Microblog Service
+  body
+    nav#navbar.navbar
+      if locals.authorId > 0
+        +link(`/user_home/${locals.userId}`, 'Blog')
+        div.navbar__block
+          +link('/auth/logout', 'Logout')
+      else
+        +link('/', 'Blog')
+        div.navbar__block
+          +link('/auth/login', 'Login')
+          +link('/auth/register', 'Register')
+    div.container
+      block content

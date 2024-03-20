@@ -1,9 +1,10 @@
 require('dotenv').config();
 const sass = require('./utils/sass.js')
-
+const { router: pageRouter } = require('./routes/pages.js')
 
 const express = require('express');
 const server = express();
+
 
 const { PORT } = require('./config/default');
 
@@ -14,3 +15,6 @@ server.set('view engine', 'pug');
 server.get('/', (req, res) => {
 	res.render('index', {})
 })
+
+server.use('/', pageRouter);
+
