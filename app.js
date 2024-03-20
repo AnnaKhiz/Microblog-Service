@@ -1,10 +1,12 @@
 require('dotenv').config();
 const sass = require('./utils/sass.js')
-const { router: pageRouter } = require('./routes/pages.js')
+const { router: pageRouter } = require('./routes/pages.js');
+
+const { init } = require('./db')
+init()
 
 const express = require('express');
 const server = express();
-
 
 const { PORT } = require('./config/default');
 
