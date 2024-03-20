@@ -1,0 +1,31 @@
+- var array = [{name: "Name 1", description: "Description 1"}, {name: "Name 2", description: "Description 2"}, {name: "Name 3", description: "Description 3"}]
+- var navItemsAuth = ['Login', 'Register']
+- var navItemsMenu = ['Blog']
+
+mixin navList(link, array)
+  ul.navbar__list.menu
+    each item in array
+      li.navbar__item
+        a(href=link)= item
+
+
+html
+  head
+    link(rel="stylesheet" href="/public/style.css")
+    title Microblog Service
+  body
+    nav#navbar.navbar
+      +navList('#', navItemsMenu)
+      +navList('#', navItemsAuth)
+    div.container
+      div.content
+        p.content__title Articles
+        each item in array
+          div.content__block
+            div.content__block-info
+              p= item.name
+              p= item.description
+            if locals.authorId > 0
+              div.content__block-control
+                button#edit-btn Edit
+                button#del-btn Delete

@@ -1,0 +1,106 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0; }
+
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+*:focus, *:active {
+  outline: none; }
+
+a:focus, a:active {
+  outline: none; }
+
+nav, footer, header, aside {
+  display: block; }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 16px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; }
+
+input, button, textarea {
+  font-family: inherit; }
+
+input::-ms-clear {
+  display: none; }
+
+button {
+  cursor: pointer; }
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0; }
+
+a, a:visited {
+  text-decoration: none; }
+
+a:hover {
+  text-decoration: none; }
+
+ul li {
+  list-style: none; }
+
+img {
+  vertical-align: top; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: 400; }
+
+.container {
+  margin: 0 20px; }
+
+.content {
+  padding: 15px; }
+  .content__title {
+    margin-bottom: 15px;
+    font: 500 1rem/1.5rem "Times New Roman", sans-serif; }
+  .content__block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid brown; }
+    .content__block-control button {
+      margin-right: 10px;
+      padding: 10px;
+      border: 1px solid brown;
+      border-radius: 10px;
+      background-color: transparent; }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 15px;
+  background-color: #673ab7; }
+  .navbar__list {
+    display: flex;
+    list-style-type: none;
+    justify-content: flex-end;
+    align-items: center;
+    column-gap: 15px; }
+    .navbar__list.menu {
+      justify-content: flex-start; }
+    .navbar__list a {
+      color: bisque;
+      transition: color 0.5s ease-out;
+      margin-bottom: 5px; }
+      .navbar__list a:active {
+        color: red; }
+      .navbar__list a:visited {
+        color: bisque; }
+      .navbar__list a:hover {
+        color: aliceblue;
+        transition: color 0.5s ease-out; }
