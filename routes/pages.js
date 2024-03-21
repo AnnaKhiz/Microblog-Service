@@ -33,7 +33,7 @@ router.route('/auth/login')
 
 router.get('/', async (req,res,next) => {
 	const posts = await Post.find()
-
+	posts.sort((a,b) => b.date.localeCompare(a.date))
 	res.render('index', { posts });
 })
 
@@ -76,7 +76,7 @@ router.post('/', express.urlencoded({ extended: false }), async (req, res, next)
 	const { body: post } = req;
 
 	post.author = new ObjectId(res.cookie.id)
-
+	post.date = Date.now().toString();
 	console.log(post)
 	const newPost = await new Post(post)
 	const result = await newPost.save()
