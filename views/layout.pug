@@ -7,8 +7,8 @@ html
     title Microblog Service
   body
     nav#navbar.navbar
-      if locals.authorId > 0
-        +link(`/user_home/${locals.userId}`, 'Blog')
+      if locals.id
+        +link(`/user_home/${locals.id}`, 'Blog')
         div.navbar__block
           +link('/auth/logout', 'Logout')
       else

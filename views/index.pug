@@ -4,12 +4,12 @@ extends layout
 block content
   div.content
     p.content__title Articles
-    each item in [{name: "Name 1", description: "Description 1"}, {name: "Name 2", description: "Description 2"}, {name: "Name 3", description: "Description 3"}]
+    each item in locals.posts
       div.content__block
         div.content__block-info
-          p= item.name
+          p.content__block-label= item.name
           p= item.description
-        if locals.authorId > 0
+        if locals.id
           div.content__block-control
             button#edit-btn Edit
             button#del-btn Delete
