@@ -3,8 +3,9 @@ extends layout
 block content
   div.content
     p.content__title Articles
-    button#create-post.button Create post
-    +add-post-form
+    if locals.id
+      button#create-post.button Create post
+      +add-post-form
     if locals.posts.length === 0
       p You don't have any posts yet. Create first right now.
     else

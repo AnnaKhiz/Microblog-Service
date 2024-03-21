@@ -44,7 +44,7 @@ router.get(`/user_home/:id`, async (req,res,next) => {
 	if (!posts) {
 		res.send({"result": "No posts"})
 	}
-	res.render('index', { id, posts })
+	res.render('index', { id, posts });
 })
 
 //REGISTER
@@ -56,7 +56,7 @@ router.route('/auth/register')
 
 		user.posts = []
 		user.password = await hashPass(user.password)
-		console.log(user)
+		// console.log(user)
 		const newUser = await new User(user)
 		const result = await newUser.save()
 
@@ -72,16 +72,16 @@ router.route('/auth/logout')
 		res.redirect('/')
 	});
 
-router.post('/', express.urlencoded({ extended: false }), async (req, res, next) => {
+router.post('/user_home/:id', express.urlencoded({ extended: false }), async (req, res, next) => {
 	const { body: post } = req;
+	const { id } = req.cookies;
+	post.author = new ObjectId(id)
 
-	post.author = new ObjectId(res.cookie.id)
 	post.date = Date.now().toString();
-	console.log(post)
+
 	const newPost = await new Post(post)
 	const result = await newPost.save()
-
-	res.status(201).redirect(`/`)
+	res.status(201).redirect(`/user_home/${result.author.toString()}`)
 
 })
 

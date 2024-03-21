@@ -8,9 +8,10 @@ const express = require('express');
 const server = express();
 
 const { PORT } = require('./config/default');
-
+const cookieParser = require('cookie-parser');
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+server.use(cookieParser())
 const jsonBodyParser = express.json();
 server.use(jsonBodyParser);
 
@@ -22,6 +23,7 @@ server.set('view engine', 'pug');
 // 	res.render('index', {id, posts})
 // })
 // server.use(express.urlencoded({ extended: true }));
+
 server.use('/', pageRouter);
 
 server.use('/api/users', userRouter);
