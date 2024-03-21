@@ -12,6 +12,7 @@ mixin add-post-form
         textarea#description(name="description", required, placeholder="Type your post here", rows="10" )
       button#btn-login.button(type="submit") Publish
 
+
 html
   head
     link(rel="stylesheet" href="/public/style.css")
@@ -20,11 +21,11 @@ html
   body
     nav#navbar.navbar
       if locals.id
-        +link(`/user_home/${locals.id}`, 'Blog')
+        +link(`/user_home/${locals.id}`, 'My Posts')
         div.navbar__block
           +link('/auth/logout', 'Logout')
       else
-        +link('/', 'Blog')
+        +link('/', 'Home Page')
         div.navbar__block
           +link('/auth/login', 'Login')
           +link('/auth/register', 'Register')

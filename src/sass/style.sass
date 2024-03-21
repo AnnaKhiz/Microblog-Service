@@ -11,14 +11,29 @@
   &__block
     display: flex
     justify-content: space-between
-    align-items: center
+    align-items: flex-start
     margin-bottom: 15px
     padding: 10px
     border: 1px solid brown
-    &-label
-      margin-bottom: 10px
-      font-weight: 600
-      font-size: 1.2rem
+  &__label
+    margin-bottom: 10px
+    font-weight: 600
+    font-size: 1.2rem
+  &__control
+    display: flex
+    justify-content: space-between
+    align-items: center
+    column-gap: 10px
+  &__info
+    width: 70%
+  &__comments-container
+    width: 100%
+    padding-top: 20px
+  &__comments
+    color: #242cbb
+  &__form
+    margin-bottom: 10px
+
 
 
 
@@ -58,6 +73,7 @@
     margin-bottom: 10px
   &__block
     text-align: left
+
 .button
   padding: 10px
   margin-bottom: 20px
@@ -66,15 +82,19 @@
   background-color: transparent
   color: black
   transition: background-color 0.5s ease-in-out
+  &.control
+    margin-bottom: 0
   &:hover
     background-color: #dfc9ff
     transition: background-color 0.5s ease-in-out
 textarea
   resize: none
   scrollbar-width: none
+  &.comment
+    width: 100%
 input, textarea
   padding: 10px
-  margin-bottom: 20px
+  margin-bottom: 15px
   width: 100%
   border: 1px solid #673ab7
   background-color: transparent

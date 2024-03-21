@@ -10,7 +10,11 @@ const PostSchema = new mongoose.Schema({
 	author: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'users'
-	}
+	},
+	comments: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'comments'
+	}]
 })
 
 const UserSchema = new mongoose.Schema({
@@ -22,12 +26,25 @@ const UserSchema = new mongoose.Schema({
 	}]
 })
 
+const CommentSchema = new mongoose.Schema({
+	text: String,
+	date: String,
+	user: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'users'
+	},
+	post: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'posts'
+	}
+})
+
 const Post = mongoose.model('posts', PostSchema);
 const User = mongoose.model('users', UserSchema);
+const Comment = mongoose.model('comments', CommentSchema);
 
 async function init() {
 	try {
-		// await client.connect();
 		await mongoose.connect(DBURL, { dbName: 'microblogService' })
 		console.log('Mongo DB connected');
 	} catch (error) {
@@ -41,5 +58,6 @@ init()
 module.exports = {
 	ObjectId,
 	Post,
-	User
+	User,
+	Comment
 }

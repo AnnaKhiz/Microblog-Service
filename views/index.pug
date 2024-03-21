@@ -2,20 +2,34 @@ extends layout
 
 block content
   div.content
-    p.content__title Articles
+    p.content__title Posts
     if locals.id
       button#create-post.button Create post
       +add-post-form
     if locals.posts.length === 0
-      p You don't have any posts yet. Create first right now.
+      p.content__warning You don't have any posts yet. Create first right now.
     else
       each item in locals.posts
         div.content__block
-          div.content__block-info
-            p.content__block-label= item.name
+          div.content__info
+            p.content__label= item.name
             p= item.description
+            div#comments-container.content__comments-container.hidden
+              button#comment-add-btn.button Add comment
+              form#form-comment.content__form.hidden
+                textarea#comment-input(placeholder="Enter your comment", required, rows="3", width="100%", class="comment")
+                button#comment-submit-btn.button(type="submit") Send
+              p.content__comments First comment
+
+
           if locals.id
-            div.content__block-control
-              button#edit-btn.button Edit
-              button#del-btn.button Delete
+            div.content__control
+              button#comments-btn.button.control Comments
+              button#edit-btn.button.control Edit
+              button#del-btn.button.control Delete
+          else
+            div.content__control
+              button#comments-btn.button.control Comments
+
+
 

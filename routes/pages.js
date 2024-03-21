@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Post, User, ObjectId } = require('../db')
+const { Post, User, Comment, ObjectId } = require('../db')
 const { hashPass, checkPass } = require('../utils/auth')
 const { AddNewPost } = require('../services/apiPosts')
 
@@ -40,7 +40,8 @@ router.get('/', async (req,res,next) => {
 // USER HOME
 router.get(`/user_home/:id`, async (req,res,next) => {
 	const { id } = req.params;
-	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author')
+	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author').populate('comments')
+	console.log(posts)
 	if (!posts) {
 		res.send({"result": "No posts"})
 	}
@@ -63,7 +64,7 @@ router.route('/auth/register')
 		result ? res.status(201).redirect(`/auth/login`) : res.status(400).redirect('/auth/register');
 		return result
 
-	})
+	});
 
 //LOGOUT
 router.route('/auth/logout')
@@ -79,8 +80,14 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 
 	post.date = Date.now().toString();
 
-	const newPost = await new Post(post)
-	const result = await newPost.save()
+	post.comment = [];
+
+	const newPost = await new Post(post);
+	const result = await newPost.save();
+
+	// const comment = await new Comment({})
+
+
 	res.status(201).redirect(`/user_home/${result.author.toString()}`)
 
 })
