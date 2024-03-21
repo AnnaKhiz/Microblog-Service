@@ -1,9 +1,21 @@
 mixin link(link, item)
   a(href=link)= item
 
+mixin add-post-form
+  div#add.add-post.hidden
+    form(method="POST").form
+      div.form__block
+        label(for="name").form__label Enter title
+        input#name(type="text", name="name", placeholder="Enter title", required)
+      div.form__block
+        label(for="description").form__label Type your post
+        textarea#description(name="description", required, placeholder="Type your post here", rows="10" )
+      button#btn-login.button(type="submit") Publish
+
 html
   head
     link(rel="stylesheet" href="/public/style.css")
+    script(type="module", src="/public/index.js")
     title Microblog Service
   body
     nav#navbar.navbar
@@ -18,3 +30,4 @@ html
           +link('/auth/register', 'Register')
     div.container
       block content
+

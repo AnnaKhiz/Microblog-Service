@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Post, User, ObjectId } = require('../db')
 const { hashPass, checkPass } = require('../utils/auth')
+const { AddNewPost } = require('../services/apiPosts')
 
 // LOGIN
 router.route('/auth/login')
@@ -32,6 +33,7 @@ router.route('/auth/login')
 
 router.get('/', async (req,res,next) => {
 	const posts = await Post.find()
+
 	res.render('index', { posts });
 })
 
@@ -39,7 +41,10 @@ router.get('/', async (req,res,next) => {
 router.get(`/user_home/:id`, async (req,res,next) => {
 	const { id } = req.params;
 	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author')
-	res.render('index', { id, posts });
+	if (!posts) {
+		res.send({"result": "No posts"})
+	}
+	res.render('index', { id, posts })
 })
 
 //REGISTER
@@ -65,6 +70,19 @@ router.route('/auth/logout')
 	.get((_req, res) => {
 		res.clearCookie('id')
 		res.redirect('/')
-	})
+	});
+
+router.post('/', express.urlencoded({ extended: false }), async (req, res, next) => {
+	const { body: post } = req;
+
+	post.author = new ObjectId(res.cookie.id)
+
+	console.log(post)
+	const newPost = await new Post(post)
+	const result = await newPost.save()
+
+	res.status(201).redirect(`/`)
+
+})
 
 module.exports = { router }

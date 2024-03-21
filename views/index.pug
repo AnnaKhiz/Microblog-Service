@@ -1,15 +1,20 @@
 extends layout
 
-
 block content
   div.content
     p.content__title Articles
-    each item in locals.posts
-      div.content__block
-        div.content__block-info
-          p.content__block-label= item.name
-          p= item.description
-        if locals.id
-          div.content__block-control
-            button#edit-btn Edit
-            button#del-btn Delete
+    button#create-post.button Create post
+    +add-post-form
+    if locals.posts.length === 0
+      p You don't have any posts yet. Create first right now.
+    else
+      each item in locals.posts
+        div.content__block
+          div.content__block-info
+            p.content__block-label= item.name
+            p= item.description
+          if locals.id
+            div.content__block-control
+              button#edit-btn.button Edit
+              button#del-btn.button Delete
+

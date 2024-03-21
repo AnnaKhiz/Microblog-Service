@@ -75,12 +75,6 @@ h1, h2, h3, h4, h5, h6 {
       margin-bottom: 10px;
       font-weight: 600;
       font-size: 1.2rem; }
-    .content__block-control button {
-      margin-right: 10px;
-      padding: 10px;
-      border: 1px solid brown;
-      border-radius: 10px;
-      background-color: transparent; }
 
 .navbar {
   display: flex;
@@ -119,16 +113,30 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 10px; }
   .form__block {
     text-align: left; }
-    .form__block input {
-      padding: 10px;
-      margin-bottom: 20px;
-      width: 100%;
-      border: 1px solid #673ab7;
-      background-color: transparent;
-      color: black; }
-  .form__button {
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #673ab7;
-    background-color: transparent;
-    color: black; }
+
+.button {
+  padding: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #673ab7;
+  background-color: transparent;
+  color: black;
+  transition: background-color 0.5s ease-in-out; }
+  .button:hover {
+    background-color: #dfc9ff;
+    transition: background-color 0.5s ease-in-out; }
+
+textarea {
+  resize: none;
+  scrollbar-width: none; }
+
+input, textarea {
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  border: 1px solid #673ab7;
+  background-color: transparent;
+  color: black; }
+
+.hidden {
+  display: none; }

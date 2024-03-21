@@ -8,22 +8,22 @@ function getUsers() {
 
 async function loginUser(req, res, next) {
 
-	const { email } = req.body;
-	const user = await User.findOne({ email })
-	console.log(user)
-
-	if (!user) {
-		return res.redirect('/auth/login')
-	}
-
-	const { password } = req.body;
-
-	const result = await checkPass(password, user.password);
-	console.log(result)
-
-	res.cookie('id', user.id)
-
-	result ? res.send({ "result": result }) : res.status(404).send({ "result": "no users found" });
+	// const { email } = req.body;
+	// const user = await User.findOne({ email })
+	// console.log(user)
+	//
+	// if (!user) {
+	// 	return res.redirect('/auth/login')
+	// }
+	//
+	// const { password } = req.body;
+	//
+	// const result = await checkPass(password, user.password);
+	// console.log(result)
+	//
+	// res.cookie('id', user.id)
+	//
+	// result ? res.send({ "result": result }) : res.status(404).send({ "result": "no users found" });
 }
 
 async function addNewUser(req, res, next) {

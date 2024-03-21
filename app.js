@@ -21,7 +21,7 @@ server.set('view engine', 'pug');
 // server.get('/', (req, res) => {
 // 	res.render('index', {id, posts})
 // })
-
+// server.use(express.urlencoded({ extended: true }));
 server.use('/', pageRouter);
 
 server.use('/api/users', userRouter);
