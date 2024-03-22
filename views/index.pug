@@ -15,24 +15,24 @@ block content
             p.content__label= post.name
             p= post.description
             div.comments-container.content__comments-container.hidden
-              if locals.id
-                button#comment-add-btn.button Add comment
-                form#form-comment.content__form.hidden
-                  textarea#comment-input(placeholder="Enter your comment", required, rows="3", width="100%", class="comment")
-                  button#comment-submit-btn.button(type="submit") Send
               if post.comments.length === 0
                 p.content__comments No comments yet
               else
                 each comment in post.comments
-                 p.content__comments= comment.text
+                  p.content__comments= comment.text
+              if locals.id
+                form(method="POST", action='/user_home/:id/comment').form-comment.content__form.hidden
+                  textarea#comment-input(placeholder="Enter your comment", name="text", required, rows="3", width="100%", class="comment")
+                  button#comment-submit-btn.button.control(type="submit") Send
+
           if locals.id
             div.content__control
-              button.comments-btn.button.control Comments
+              button(data-id= post.date).comments-btn.button.control Comments
               button#edit-btn.button.control Edit
               button#del-btn.button.control Delete
           else
             div.content__control
-              button.comments-btn.button.control Comments
+              button(data-id= post.date).comments-btn.button.control Comments
 
 
 

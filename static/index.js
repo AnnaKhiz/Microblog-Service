@@ -3,39 +3,37 @@ const commentsButton = [...document.querySelectorAll('.comments-btn')];
 const commentsContainer = [...document.querySelectorAll('div.comments-container')];
 console.log(commentsButton)
 const addCommentButton = document.getElementById('comment-add-btn');
-const commentForm = document.getElementById('form-comment');
+const commentForm = [...document.querySelectorAll('.form-comment')];
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
 		e.preventDefault();
-
+		const target = e.target.dataset.id
+		console.log(target)
 		console.log(`comments button ${index} pushed`)
 		commentsContainer[index].classList.toggle('hidden');
-		if (!commentsContainer.classList.contains('hidden')) {
+
+		fetch('/api/posts').then(res => res.json()).then(res => {
+			console.log(res.posts)
+			const result = res.posts
+			result.forEach(post => {
+				if (+post.date === +target) {
+					console.log(post._id)
+					document.cookie = `targetpost=${post._id}`
+				}
+			})
+
+		})
+
+		commentForm[index].classList.toggle('hidden');
+		if (!commentsContainer[index].classList.contains('hidden')) {
 			element.innerText = 'Hide';
-			commentForm.classList.add('hidden');
-			addNewComment(addCommentButton, commentForm);
 		} else {
 			element.innerText = 'Comments'
-			addCommentButton.innerText = 'Add comment'
-			addNewComment(addCommentButton, commentForm);
 		}
 
 	})
 })
-
-function addNewComment(button, form) {
-	button.addEventListener('click', (e) => {
-		e.preventDefault();
-		form.classList.toggle('hidden');
-		if (form.classList.contains('hidden') || commentsContainer.classList.contains('hidden')) {
-			button.innerText = 'Add comment';
-		} else {
-			button.innerText = 'Hide'
-		}
-	})
-}
-
 
 createButton.addEventListener('click', (e) => {
 	e.preventDefault();

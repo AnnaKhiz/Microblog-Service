@@ -23,6 +23,10 @@ const UserSchema = new mongoose.Schema({
 	posts: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'posts'
+	}],
+	comments: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'comments'
 	}]
 })
 

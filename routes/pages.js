@@ -12,7 +12,7 @@ router.route('/auth/login')
 		const { login } = req.body;
 
 		const user = await User.findOne( { login })
-		console.log(user)
+		// console.log(user)
 
 		if (!user) {
 			return res.redirect('/auth/login')
@@ -22,7 +22,7 @@ router.route('/auth/login')
 		console.log(password)
 
 		const result = await checkPass(password, user.password);
-		console.log(result)
+		// console.log(result)
 
 		res.cookie('id', user._id.toString())
 
@@ -41,12 +41,13 @@ router.get('/', async (req,res,next) => {
 router.get(`/user_home/:id`, async (req,res,next) => {
 	const { id } = req.params;
 	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author').populate('comments')
-	console.log(posts)
+	// console.log(posts)
 	if (!posts) {
 		res.send({"result": "No posts"})
 	}
+	posts.sort((a,b) => b.date.localeCompare(a.date))
 	res.render('index', { id, posts });
-});
+})
 
 //REGISTER
 router.route('/auth/register')
@@ -56,6 +57,7 @@ router.route('/auth/register')
 		const { body: user } = req;
 
 		user.posts = []
+		user.comments = []
 		user.password = await hashPass(user.password)
 		// console.log(user)
 		const newUser = await new User(user)
@@ -74,7 +76,13 @@ router.route('/auth/logout')
 	});
 
 router.post('/user_home/:id', express.urlencoded({ extended: false }), async (req, res, next) => {
+	console.log(req.body)
+
 	const { body: post } = req;
+
+	console.log('request')
+	console.log(req.body)
+
 	const { id } = req.cookies;
 	post.author = new ObjectId(id)
 
@@ -88,7 +96,42 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 	// const comment = await new Comment({})
 
 
-	res.status(201).redirect(`/user_home/${result.author.toString()}`)
+	res.status(201).redirect(`/user_home/${id}`)
+
+})
+
+router.post('/user_home/:id/comment', express.urlencoded({ extended: false }), async (req, res, next) => {
+	// console.log(req.body)
+
+	const { body: comment } = req
+
+	console.log('request')
+	console.log(comment)
+
+	const { id, targetpost } = req.cookies;
+
+
+	comment.date = Date.now().toString();
+	comment.user = new ObjectId(id);
+	comment.post = new ObjectId(targetpost);
+	// post.author = new ObjectId(id)
+	//
+	// post.date = Date.now().toString();
+	//
+	// post.comment = [];
+	//
+	// const newPost = await new Post(post);
+	// const result = await newPost.save();
+	// { new ObjectId(targetpost) })
+	// const editPost = await Post().;
+
+	const newComment = await new Comment(comment)
+	const result = await newComment.save()
+
+	const updatedPost = await Post.findByIdAndUpdate(targetpost, { $push: { comments: result._id }}, { new: true })
+	const updatedUser = await User.findByIdAndUpdate(id, { $push: { comments: result._id }}, { new: true })
+
+	res.status(201).redirect(`/user_home/${id}`)
 
 })
 

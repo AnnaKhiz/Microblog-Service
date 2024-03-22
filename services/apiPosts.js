@@ -1,14 +1,24 @@
-const { Post, User, ObjectId } = require('../db');
+const { Post, User, Comment, ObjectId } = require('../db');
 
 async function getPosts(req, res, next) {
-	const { id } = req.cookie;
+	const { id } = req.cookies;
 
-	const posts = await Post.find();
-
-	resp.render('index', { id, posts });
+	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author')
+	console.log(posts)
+	res.status(200).send({ id, posts })
+	// res.render('index', { id, posts });
 }
 
-function getPostsId() {
+async function getPostsId(req, res, next) {
+	const { id } = req.cookies;
+	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author')
+	console.log(posts)
+	// if (!posts) {
+	// 	res.send({"result": "No posts"})
+	// }
+	// posts.sort((a,b) => b.date.localeCompare(a.date))
+	res.render('index', { id, posts });
+
 
 }
 
