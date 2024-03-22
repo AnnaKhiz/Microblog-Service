@@ -28,14 +28,14 @@ router.route('/auth/login')
 
 		result ? res.redirect(`/user_home/${user._id.toString()}`) : res.status(404).send({ "result": "no users found" })
 		next()
-	})
+	});
 
 
 router.get('/', async (req,res,next) => {
-	const posts = await Post.find()
+	const posts = await Post.find().populate('comments');
 	posts.sort((a,b) => b.date.localeCompare(a.date))
 	res.render('index', { posts });
-})
+});
 
 // USER HOME
 router.get(`/user_home/:id`, async (req,res,next) => {
@@ -46,7 +46,7 @@ router.get(`/user_home/:id`, async (req,res,next) => {
 		res.send({"result": "No posts"})
 	}
 	res.render('index', { id, posts });
-})
+});
 
 //REGISTER
 router.route('/auth/register')
