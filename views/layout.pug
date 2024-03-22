@@ -21,7 +21,9 @@ html
   body
     nav#navbar.navbar
       if locals.id
-        +link(`/user_home/${locals.id}`, 'My Posts')
+        div.navbar__block
+          +link(`/`, 'Home Page')
+          +link(`/user_home/${locals.id}`, 'My Posts')
         div.navbar__block
           +link('/auth/logout', 'Logout')
       else

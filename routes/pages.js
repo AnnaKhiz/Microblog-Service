@@ -32,10 +32,21 @@ router.route('/auth/login')
 
 
 router.get('/', async (req,res,next) => {
+	const {id} = req.cookies;
+	if (id) {
+		const posts = await Post.find().populate('comments');
+		posts.sort((a,b) => b.date.localeCompare(a.date))
+		res.render('index', { id, posts });
+	}
 	const posts = await Post.find().populate('comments');
 	posts.sort((a,b) => b.date.localeCompare(a.date))
 	res.render('index', { posts });
 });
+
+
+// router.get('/user_home'async (req, res, next) => {
+//
+// })
 
 // USER HOME
 router.get(`/user_home/:id`, async (req,res,next) => {
@@ -72,6 +83,7 @@ router.route('/auth/register')
 router.route('/auth/logout')
 	.get((_req, res) => {
 		res.clearCookie('id')
+		res.clearCookie('targetpost')
 		res.redirect('/')
 	});
 
@@ -113,8 +125,9 @@ router.post('/user_home/:id/comment', express.urlencoded({ extended: false }), a
 	const updatedPost = await Post.findByIdAndUpdate(targetpost, { $push: { comments: new ObjectId(result._id) }}, { new: true })
 	const updatedUser = await User.findByIdAndUpdate(id, { $push: { comments: new ObjectId(result._id) }}, { new: true })
 
-	// res.clearCookie('targetpost')
-	res.status(201).redirect(`/user_home/${id}`)
+
+	// res.status(201).redirect(`/user_home/${id}`)
+	res.status(201).redirect(`/`)
 
 })
 
