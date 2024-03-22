@@ -43,6 +43,21 @@ const CommentSchema = new mongoose.Schema({
 	}
 })
 
+PostSchema.pre('remove', async function(next) {
+	const postId = this._id;
+
+	try {
+
+		await Comment.deleteMany({ post: new ObjectId(postId) });
+		await User.deleteMany({ posts: new ObjectId(postId) });
+
+		next();
+	} catch (error) {
+		next(error);
+	}
+});
+
+
 const Post = mongoose.model('posts', PostSchema);
 const User = mongoose.model('users', UserSchema);
 const Comment = mongoose.model('comments', CommentSchema);

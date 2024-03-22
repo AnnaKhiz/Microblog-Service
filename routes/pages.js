@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Post, User, Comment, ObjectId } = require('../db')
 const { hashPass, checkPass } = require('../utils/auth')
-const { AddNewPost } = require('../services/apiPosts')
+const { AddNewPost, deleteOnePost } = require('../services/apiPosts')
 
 // LOGIN
 router.route('/auth/login')
@@ -85,54 +85,39 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 
 	const { id } = req.cookies;
 	post.author = new ObjectId(id)
-
 	post.date = Date.now().toString();
-
-	post.comment = [];
+	post.comments = [];
 
 	const newPost = await new Post(post);
 	const result = await newPost.save();
 
-	// const comment = await new Comment({})
-
-
 	res.status(201).redirect(`/user_home/${id}`)
 
 })
 
+// ADD COMMENT
 router.post('/user_home/:id/comment', express.urlencoded({ extended: false }), async (req, res, next) => {
-	// console.log(req.body)
 
 	const { body: comment } = req
 
-	console.log('request')
-	console.log(comment)
-
 	const { id, targetpost } = req.cookies;
-
+	console.log(`id: ${id}`)
 
 	comment.date = Date.now().toString();
 	comment.user = new ObjectId(id);
 	comment.post = new ObjectId(targetpost);
-	// post.author = new ObjectId(id)
-	//
-	// post.date = Date.now().toString();
-	//
-	// post.comment = [];
-	//
-	// const newPost = await new Post(post);
-	// const result = await newPost.save();
-	// { new ObjectId(targetpost) })
-	// const editPost = await Post().;
 
 	const newComment = await new Comment(comment)
 	const result = await newComment.save()
 
-	const updatedPost = await Post.findByIdAndUpdate(targetpost, { $push: { comments: result._id }}, { new: true })
-	const updatedUser = await User.findByIdAndUpdate(id, { $push: { comments: result._id }}, { new: true })
+	const updatedPost = await Post.findByIdAndUpdate(targetpost, { $push: { comments: new ObjectId(result._id) }}, { new: true })
+	const updatedUser = await User.findByIdAndUpdate(id, { $push: { comments: new ObjectId(result._id) }}, { new: true })
 
+	// res.clearCookie('targetpost')
 	res.status(201).redirect(`/user_home/${id}`)
 
 })
+
+
 
 module.exports = { router }

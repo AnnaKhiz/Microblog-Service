@@ -4,11 +4,12 @@ const commentsContainer = [...document.querySelectorAll('div.comments-container'
 console.log(commentsButton)
 const addCommentButton = document.getElementById('comment-add-btn');
 const commentForm = [...document.querySelectorAll('.form-comment')];
+const deleteButton = [...document.querySelectorAll('.del-btn')];
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
 		e.preventDefault();
-		const target = e.target.dataset.id
+		const target = e.target.parentElement.dataset.id
 		console.log(target)
 		console.log(`comments button ${index} pushed`)
 		commentsContainer[index].classList.toggle('hidden');
@@ -17,9 +18,8 @@ commentsButton.forEach((element, index) => {
 			console.log(res.posts)
 			const result = res.posts
 			result.forEach(post => {
-				if (+post.date === +target) {
-					console.log(post._id)
-					document.cookie = `targetpost=${post._id}`
+				if (post._id === target) {
+					document.cookie = `targetpost=${post._id}`;
 				}
 			})
 
@@ -44,4 +44,16 @@ createButton.addEventListener('click', (e) => {
 		: createButton.innerText = 'Hide form';
 });
 
+console.log(deleteButton)
+deleteButton.forEach(button => {
+	button.addEventListener('click', (e) =>{
+		e.preventDefault();
+
+		const target = e.target.parentElement.dataset.id
+		console.log(target)
+
+		fetch(`/api/posts/${target}`, { method: 'DELETE' })
+			.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
+		})
+})
 

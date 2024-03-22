@@ -47,9 +47,22 @@ async function addNewPost(req, res, next) {
 
 }
 
+async function deleteOnePost(req, res, next) {
+	const { id: postId } = req.params;
 
+	console.log(`postId: ${postId}`)
+	try {
+		const deletedPost = await Post.findByIdAndDelete(postId);
+		if (!deletedPost) {
+			throw new Error('Post did not found');
+		}
+		console.log('Post deleted successfully:', deletedPost);
+		res.status(200).send({"result": "Post was deleted successfully"})
 
-function deleteOnePost() {
+	} catch (error) {
+		console.error('Deleiting error:', error);
+		res.status(404).send({"result": "Post did not found"})
+	}
 
 }
 

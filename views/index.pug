@@ -26,10 +26,10 @@ block content
                   button#comment-submit-btn.button.control(type="submit") Send
 
           if locals.id
-            div.content__control
-              button(data-id= post.date).comments-btn.button.control Comments
+            div(data-id= post.id).content__control
+              button.comments-btn.button.control Comments
               button#edit-btn.button.control Edit
-              button#del-btn.button.control Delete
+              button.del-btn.button.control Delete
           else
             div.content__control
               button(data-id= post.date).comments-btn.button.control Comments
