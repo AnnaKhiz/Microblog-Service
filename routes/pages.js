@@ -19,7 +19,7 @@ router.route('/auth/login')
 		}
 
 		const { password } = req.body;
-		console.log(password)
+		// console.log(password)
 
 		const result = await checkPass(password, user.password);
 		// console.log(result)
@@ -37,10 +37,13 @@ router.get('/', async (req,res,next) => {
 		const posts = await Post.find().populate('comments');
 		posts.sort((a,b) => b.date.localeCompare(a.date))
 		res.render('index', { id, posts });
+	} else {
+		const posts = await Post.find().populate('comments');
+		posts.sort((a,b) => b.date.localeCompare(a.date))
+		// console.log(posts)
+		res.render('index', { posts });
 	}
-	const posts = await Post.find().populate('comments');
-	posts.sort((a,b) => b.date.localeCompare(a.date))
-	res.render('index', { posts });
+
 });
 
 
@@ -88,12 +91,12 @@ router.route('/auth/logout')
 	});
 
 router.post('/user_home/:id', express.urlencoded({ extended: false }), async (req, res, next) => {
-	console.log(req.body)
+	// console.log(req.body)
 
 	const { body: post } = req;
 
-	console.log('request')
-	console.log(req.body)
+	// console.log('request')
+	// console.log(req.body)
 
 	const { id } = req.cookies;
 	post.author = new ObjectId(id)
@@ -105,6 +108,7 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 
 	res.status(201).redirect(`/user_home/${id}`)
 
+
 })
 
 // ADD COMMENT
@@ -113,7 +117,7 @@ router.post('/user_home/:id/comment', express.urlencoded({ extended: false }), a
 	const { body: comment } = req
 
 	const { id, targetpost } = req.cookies;
-	console.log(`id: ${id}`)
+	// console.log(`id: ${id}`)
 
 	comment.date = Date.now().toString();
 	comment.user = new ObjectId(id);
@@ -125,11 +129,14 @@ router.post('/user_home/:id/comment', express.urlencoded({ extended: false }), a
 	const updatedPost = await Post.findByIdAndUpdate(targetpost, { $push: { comments: new ObjectId(result._id) }}, { new: true })
 	const updatedUser = await User.findByIdAndUpdate(id, { $push: { comments: new ObjectId(result._id) }}, { new: true })
 
-
-	// res.status(201).redirect(`/user_home/${id}`)
 	res.status(201).redirect(`/`)
 
+
+
 })
+
+
+router.post('/user_home/:id/edit')
 
 
 

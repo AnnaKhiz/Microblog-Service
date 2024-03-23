@@ -4,7 +4,7 @@ async function getPosts(req, res, next) {
 	const { id } = req.cookies;
 
 	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author')
-	console.log(posts)
+	// console.log(posts)
 	res.status(200).send({ id, posts })
 	// res.render('index', { id, posts });
 }
@@ -12,7 +12,7 @@ async function getPosts(req, res, next) {
 async function getPostsId(req, res, next) {
 	const { id } = req.cookies;
 	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author')
-	console.log(posts)
+	// console.log(posts)
 	// if (!posts) {
 	// 	res.send({"result": "No posts"})
 	// }
@@ -36,9 +36,9 @@ async function getPostsId(req, res, next) {
 async function addNewPost(req, res, next) {
 	const { body: post } = req;
 
-	post.author = new ObjectId(res.cookie.id)
+	post.author = new ObjectId(res.cookies.id)
 
-	console.log(post)
+	// console.log(post)
 	const newPost = await new Post(post)
 	const result = await newPost.save()
 
@@ -48,11 +48,14 @@ async function addNewPost(req, res, next) {
 }
 
 async function deleteOnePost(req, res, next) {
-	const { id: postId } = req.params;
+	const { date: postDate } = req.params;
+	const { id: authorId } = req.cookies;
 
-	console.log(`postId: ${postId}`)
+	// console.log(`postId: ${postDate}`)
 	try {
-		const deletedPost = await Post.findByIdAndDelete(postId);
+		// const post = await Post.findOne({ date: postDate})
+		// console.log(post)
+		const deletedPost = await Post.findOneAndDelete( { date: postDate, author: new ObjectId(authorId)} );
 		if (!deletedPost) {
 			throw new Error('Post did not found');
 		}
@@ -66,9 +69,32 @@ async function deleteOnePost(req, res, next) {
 
 }
 
+async function updateOnePost(req, res, next) {
+	const { body: post } = req
+
+	try {
+		const updatedPost = await Post.findOneAndUpdate( { _id: new ObjectId(post.id)},
+			{ name: post.name, description: post.description} );
+		if (!updatedPost) {
+			throw new Error('Post did not found');
+		}
+		console.log('Post updated successfully:', updatedPost);
+		res.status(200).send({"result": "Post was updated successfully"})
+
+	} catch (error) {
+		console.error('Updateiting error:', error);
+		res.status(404).send({"result": "Post did not found"})
+	}
+
+}
+
+
+
+
 module.exports = {
 	getPosts,
 	getPostsId,
 	addNewPost,
-	deleteOnePost
+	deleteOnePost,
+	updateOnePost
 }

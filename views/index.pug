@@ -5,7 +5,8 @@ block content
     p.content__title Posts
     if locals.id
       button#create-post.button Create post
-      +add-post-form
+      +add-post-form('add', 'add-close', 'Publish', 'btn-publish', 'name', 'description', '/user_home/:id')
+      +add-post-form('edit', 'edit-close', 'Send changes', 'btn-save', 'edit-name', 'edit-description', `/user_home/:id/edit`)
     if locals.posts.length === 0
       p.content__warning You don't have any posts yet. Create first right now.
     else
@@ -21,18 +22,19 @@ block content
                 each comment in post.comments
                   p.content__comments= comment.text
               if locals.id
-                form(method="POST", action='/user_home/:id/comment').form-comment.content__form.hidden
+                form(method="POST", action=`/user_home/${locals.id}/comment`).form-comment.content__form.hidden
                   textarea#comment-input(placeholder="Enter your comment", name="text", required, rows="3", width="100%", class="comment")
                   button#comment-submit-btn.button.control(type="submit") Send
 
           if locals.id
-            div(data-id= post.id).content__control
+            div(data-id= post.date).content__control
               button.comments-btn.button.control Comments
-              button#edit-btn.button.control Edit
-              button.del-btn.button.control Delete
+              if locals.id === post.author.id
+                button.edit-btn.button.control Edit
+                button.del-btn.button.control Delete
           else
-            div.content__control
-              button(data-id= post.date).comments-btn.button.control Comments
+            div.content__control(data-id= post.date)
+              button.comments-btn.button.control Comments
 
 
 

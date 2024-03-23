@@ -1,25 +1,24 @@
 const createButton = document.getElementById('create-post');
 const commentsButton = [...document.querySelectorAll('.comments-btn')];
 const commentsContainer = [...document.querySelectorAll('div.comments-container')];
-console.log(commentsButton)
 const addCommentButton = document.getElementById('comment-add-btn');
 const commentForm = [...document.querySelectorAll('.form-comment')];
 const deleteButton = [...document.querySelectorAll('.del-btn')];
+const editButton = [...document.querySelectorAll('.edit-btn')];
+
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
 		e.preventDefault();
 		const target = e.target.parentElement.dataset.id
-		console.log(target)
-		console.log(`comments button ${index} pushed`)
+
 		commentsContainer[index].classList.toggle('hidden');
 
 		fetch('/api/posts').then(res => res.json()).then(res => {
-			console.log(res.posts)
 			const result = res.posts
 			result.forEach(post => {
-				if (post._id === target) {
-					document.cookie = `targetpost=${post._id}`;
+				if (post.date === target) {
+					document.cookie = `targetpost=${post._id}; expires=0; path=/`;
 				}
 			})
 
@@ -37,14 +36,9 @@ commentsButton.forEach((element, index) => {
 
 createButton.addEventListener('click', (e) => {
 	e.preventDefault();
-	const addPostForm = document.getElementById('add');
-	addPostForm.classList.toggle('hidden')
-	addPostForm.classList.contains('hidden')
-		? createButton.innerText = 'Create post'
-		: createButton.innerText = 'Hide form';
+	toggleFormVisibility('add', 'add-close');
 });
 
-console.log(deleteButton)
 deleteButton.forEach(button => {
 	button.addEventListener('click', (e) =>{
 		e.preventDefault();
@@ -57,3 +51,55 @@ deleteButton.forEach(button => {
 		})
 })
 
+editButton.forEach(button => {
+	button.addEventListener('click', (e) => {
+		e.preventDefault();
+
+		const target = e.target.parentElement.dataset.id
+		console.log(target)
+
+		toggleFormVisibility('edit', 'edit-close');
+
+		const inputTitle = document.getElementById('edit-name');
+		const inputDescription = document.getElementById('edit-description');
+
+		fetch('/api/posts').then(res => res.json()).then(res => {
+			const result = res.posts;
+			result.forEach(post => {
+				if (post.date === target) {
+
+					inputTitle.value = post.name;
+					inputDescription.value = post.description;
+
+					const saveButton = document.getElementById('btn-save');
+
+					saveButton.addEventListener('click', (e) => {
+						e.preventDefault();
+						fetch(`/api/posts/${post._id}/edit`, {
+							method: 'PATCH',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({
+								"id": post._id,
+								"name": inputTitle.value,
+								"description": inputDescription.value
+							})
+						})
+							.then(res => res.status === 200 ? window.location.reload() : console.log('Editing error'))
+					})
+
+				}
+			})
+		})
+
+	})
+})
+
+
+function toggleFormVisibility(idForm, idButton) {
+	const postForm = document.getElementById(idForm);
+	const closeButton = document.getElementById(idButton);
+	postForm.classList.remove('hidden')
+	closeButton.addEventListener('click', () => {
+		postForm.classList.add('hidden')
+	});
+}
