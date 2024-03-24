@@ -1,9 +1,9 @@
 mixin link(link, item)
   a(href=link)= item
 
-mixin add-post-form(idBlock, idButton, buttonName, submitName, inputName, inputDesc, actionPath)
+mixin add-post-form(idBlock, idButton, buttonName, submitName, inputName, inputDesc)
   div(id=idBlock).add-post.hidden
-    form(method="POST", action=actionPath).form
+    form(method="POST", action="/user_home/:id").form
       div.form__block
         label(for=inputName).form__label Enter title
         input(id=inputName, type="text", name="name", placeholder="Enter title", required)

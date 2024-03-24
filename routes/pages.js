@@ -94,7 +94,7 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 	// console.log(req.body)
 
 	const { body: post } = req;
-
+// console.log(post)
 	// console.log('request')
 	// console.log(req.body)
 
@@ -112,32 +112,26 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 })
 
 // ADD COMMENT
-router.post('/user_home/:id/comment', express.urlencoded({ extended: false }), async (req, res, next) => {
+// router.post('/user_home/:id/comment', express.urlencoded({ extended: false }), async (req, res, next) => {
 
-	const { body: comment } = req
+	// const { body: comment } = req
+	//
+	// const { id, targetpost } = req.cookies;
+	// // console.log(`id: ${id}`)
+	//
+	// comment.date = Date.now().toString();
+	// comment.user = new ObjectId(id);
+	// comment.post = new ObjectId(targetpost);
+	//
+	// const newComment = await new Comment(comment)
+	// const result = await newComment.save()
+	//
+	// const updatedPost = await Post.findByIdAndUpdate(targetpost, { $push: { comments: new ObjectId(result._id) }}, { new: true })
+	// const updatedUser = await User.findByIdAndUpdate(id, { $push: { comments: new ObjectId(result._id) }}, { new: true })
+	//
+	// res.status(201).redirect(`/`)
 
-	const { id, targetpost } = req.cookies;
-	// console.log(`id: ${id}`)
-
-	comment.date = Date.now().toString();
-	comment.user = new ObjectId(id);
-	comment.post = new ObjectId(targetpost);
-
-	const newComment = await new Comment(comment)
-	const result = await newComment.save()
-
-	const updatedPost = await Post.findByIdAndUpdate(targetpost, { $push: { comments: new ObjectId(result._id) }}, { new: true })
-	const updatedUser = await User.findByIdAndUpdate(id, { $push: { comments: new ObjectId(result._id) }}, { new: true })
-
-	res.status(201).redirect(`/`)
-
-
-
-})
-
-
-router.post('/user_home/:id/edit')
-
+// })
 
 
 module.exports = { router }

@@ -8,7 +8,7 @@ router.get('/:id', getPostsId);
 
 router.post('/', addNewPost);
 
-router.patch('/:id/edit', updateOnePost);
+router.patch('/:id', updateOnePost);
 
 router.delete('/:date', deleteOnePost);
 

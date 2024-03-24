@@ -47,6 +47,8 @@ async function addNewPost(req, res, next) {
 
 }
 
+
+// DELETE POST
 async function deleteOnePost(req, res, next) {
 	const { date: postDate } = req.params;
 	const { id: authorId } = req.cookies;
@@ -69,9 +71,11 @@ async function deleteOnePost(req, res, next) {
 
 }
 
+
+// UPDATE POST
 async function updateOnePost(req, res, next) {
 	const { body: post } = req
-
+	console.log(post)
 	try {
 		const updatedPost = await Post.findOneAndUpdate( { _id: new ObjectId(post.id)},
 			{ name: post.name, description: post.description} );

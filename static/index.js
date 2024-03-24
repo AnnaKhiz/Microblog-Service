@@ -19,10 +19,35 @@ commentsButton.forEach((element, index) => {
 			result.forEach(post => {
 				if (post.date === target) {
 					document.cookie = `targetpost=${post._id}; expires=0; path=/`;
+
+					const sendCommentButton = document.getElementById(`comment-submit-btn-${index}`);
+					const textCommentField = document.getElementById(`comment-input-${index}`);
+
+					console.log(sendCommentButton)
+					console.log(textCommentField)
+
+					// sendCommentButton.forEach(btn => {
+						sendCommentButton.addEventListener('click', (e) => {
+							e.preventDefault();
+							// console.log('clicked')
+							// console.log(i)
+							console.log(textCommentField.value)
+								fetch('/api/comments', {
+									method: 'POST',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({
+										"idPost": post._id,
+										"text": textCommentField.value,
+									})
+								})
+									.then(res => res.status === 201 ? window.location.reload() : console.log('Commenting error'))
+					})
+					// })
+
 				}
 			})
-
 		})
+
 
 		commentForm[index].classList.toggle('hidden');
 		if (!commentsContainer[index].classList.contains('hidden')) {
@@ -75,7 +100,7 @@ editButton.forEach(button => {
 
 					saveButton.addEventListener('click', (e) => {
 						e.preventDefault();
-						fetch(`/api/posts/${post._id}/edit`, {
+						fetch(`/api/posts/${post._id}`, {
 							method: 'PATCH',
 							headers: { 'Content-Type': 'application/json' },
 							body: JSON.stringify({
