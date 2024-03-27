@@ -1,0 +1,38 @@
+extends layout
+
+block scripts
+  script(type="module", src="/public/admin.js", defer)
+
+block content
+  div.content
+    p.content__title Posts
+      each post,i in locals.posts
+        div.content__block
+          div.content__info
+            p.content__label= post.name
+            p= post.description
+            div.comments-container.content__comments-container.hidden
+              if post.comments.length === 0
+                p.content__comments No comments yet
+              else
+                each comment in post.comments
+                  p.content__comments= comment.text
+          div(data-id= post.date).content__control
+            button.comments-btn.button.control Comments
+            button.edit-btn.button.control Edit
+            button.del-btn.button.control Delete
+  div.content
+    p.content__title Users
+      each user,i in locals.users
+        div.content__block
+          div.content__info
+            p.content__label= user.login
+            p= user.posts
+          div.content__control(data-name= user.login)
+            button.admin-del-btn.button.control Delete
+
+
+
+
+
+

@@ -1,53 +1,77 @@
-const createButton = document.getElementById('create-post');
+
 const commentsButton = [...document.querySelectorAll('.comments-btn')];
 const commentsContainer = [...document.querySelectorAll('div.comments-container')];
 const addCommentButton = document.getElementById('comment-add-btn');
 const commentForm = [...document.querySelectorAll('.form-comment')];
 const deleteButton = [...document.querySelectorAll('.del-btn')];
 const editButton = [...document.querySelectorAll('.edit-btn')];
+const inputLogin = document.getElementById('reg-login')
+const inputPass = document.getElementById('reg-password')
+const notificationBlock = document.getElementById('notification-block')
+const notificationText = document.getElementById('notification')
 
+const currentUrl = location.href;
+
+if (currentUrl.includes('/user_home/')) {
+	const createButton = document.getElementById('create-post');
+	createButton.addEventListener('click', (e) => {
+		e.preventDefault();
+		toggleFormVisibility('add', 'add-close');
+	});
+}
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
 		e.preventDefault();
 		const target = e.target.parentElement.dataset.id
-
 		commentsContainer[index].classList.toggle('hidden');
 
 		fetch('/api/posts').then(res => res.json()).then(res => {
 			const result = res.posts
-			result.forEach(post => {
+
+			result.forEach((post, i) => {
 				if (post.date === target) {
-					document.cookie = `targetpost=${post._id}; expires=0; path=/`;
+
+					document.cookie = `targetpost=${post._id}; expires=0; path=/`
 
 					const sendCommentButton = document.getElementById(`comment-submit-btn-${index}`);
 					const textCommentField = document.getElementById(`comment-input-${index}`);
+					const deleteComment = [...document.querySelectorAll(`[class*="post-${index}"]`)];
 
-					console.log(sendCommentButton)
-					console.log(textCommentField)
-
-					// sendCommentButton.forEach(btn => {
-						sendCommentButton.addEventListener('click', (e) => {
+					deleteComment.forEach(el => {
+						el.addEventListener('click', (e) => {
 							e.preventDefault();
-							// console.log('clicked')
-							// console.log(i)
-							console.log(textCommentField.value)
-								fetch('/api/comments', {
-									method: 'POST',
-									headers: { 'Content-Type': 'application/json' },
-									body: JSON.stringify({
-										"idPost": post._id,
-										"text": textCommentField.value,
-									})
+							const createdPostData = e.target.dataset.create
+							console.log(createdPostData)
+
+							fetch(`/api/comments/${createdPostData}`, { method: 'DELETE' })
+								.then(result => result.json())
+								.then(result => {
+
+									if (result.status === 200) {
+										window.location.reload()
+									}
 								})
-									.then(res => res.status === 201 ? window.location.reload() : console.log('Commenting error'))
+						})
 					})
-					// })
+
+					sendCommentButton.addEventListener('click', (e) => {
+						e.preventDefault();
+						// console.log(textCommentField.value)
+							fetch('/api/comments', {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({
+									"idPost": post._id,
+									"text": textCommentField.value,
+								})
+							})
+								.then(res => res.status === 201 ? window.location.reload() : console.log('Commenting error'))
+				})
 
 				}
 			})
 		})
-
 
 		commentForm[index].classList.toggle('hidden');
 		if (!commentsContainer[index].classList.contains('hidden')) {
@@ -59,13 +83,8 @@ commentsButton.forEach((element, index) => {
 	})
 })
 
-createButton.addEventListener('click', (e) => {
-	e.preventDefault();
-	toggleFormVisibility('add', 'add-close');
-});
-
 deleteButton.forEach(button => {
-	button.addEventListener('click', (e) =>{
+	button.addEventListener('click', (e) => {
 		e.preventDefault();
 
 		const target = e.target.parentElement.dataset.id
@@ -118,7 +137,6 @@ editButton.forEach(button => {
 
 	})
 })
-
 
 function toggleFormVisibility(idForm, idButton) {
 	const postForm = document.getElementById(idForm);

@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+  script(type="module", src="/public/user-page.js", defer)
+
 block content
   div.content
     p.content__title Posts
@@ -19,8 +22,11 @@ block content
               if post.comments.length === 0
                 p.content__comments No comments yet
               else
-                each comment in post.comments
-                  p.content__comments= comment.text
+                each comment,number in post.comments
+                  div.content__comments-block
+                    p.content__comments= comment.text
+                    if comment.user == locals.id
+                      a(href='/api/comments', class= `post-${i}-com-${number}`, data-create= comment.date) Delete comment
               if locals.id
                 form(method="POST", action="/user_home/:id").form-comment.content__form.hidden
                   textarea(id=`comment-input-${i}`, placeholder="Enter your comment", name="text", required, rows="3", width="100%", class="comment")

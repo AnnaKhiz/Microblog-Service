@@ -3,8 +3,13 @@ const { MongoClient, ObjectId } = require('mongodb');
 // const client = new MongoClient(DBURL);
 const mongoose = require('mongoose');
 
+const AdminSchema = new mongoose.Schema({
+	login: { type: String, unique: true },
+	password: String
+})
+
 const PostSchema = new mongoose.Schema({
-	name: String,
+	name: { type: String, unique: true },
 	description: String,
 	date: String,
 	author: {
@@ -18,7 +23,7 @@ const PostSchema = new mongoose.Schema({
 })
 
 const UserSchema = new mongoose.Schema({
-	login: String,
+	login: { type: String, unique: true },
 	password: String,
 	posts: [{
 		type: mongoose.Schema.Types.ObjectId,
@@ -28,7 +33,7 @@ const UserSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'comments'
 	}]
-})
+});
 
 const CommentSchema = new mongoose.Schema({
 	text: String,
@@ -57,7 +62,7 @@ PostSchema.pre('remove', async function(next) {
 	}
 });
 
-
+const Admin = mongoose.model('admins', AdminSchema);
 const Post = mongoose.model('posts', PostSchema);
 const User = mongoose.model('users', UserSchema);
 const Comment = mongoose.model('comments', CommentSchema);
@@ -78,5 +83,6 @@ module.exports = {
 	ObjectId,
 	Post,
 	User,
-	Comment
+	Comment,
+	Admin
 }

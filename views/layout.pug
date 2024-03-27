@@ -14,18 +14,36 @@ mixin add-post-form(idBlock, idButton, buttonName, submitName, inputName, inputD
         button.button(id=submitName, type="submit")= buttonName
         button.button(id=idButton, type="button") Close
 
+mixin login-template(idButton, nameButton)
+  form(method="POST")#form.form
+    div.form__block
+      label(for='login').form__label Enter your login
+      input(id='login', type="text", name="login", required, placeder="Enter password")
+    div.form__block
+      label(for='password').form__label Enter your password
+      input(id='password', type="password", name="password", required, placeder="Enter password")
+    button.button(id= idButton, type="submit")= nameButton
+    div.hidden#notification-block
+      p#notification= ''
+
+
 
 html
   head
     link(rel="stylesheet" href="/public/style.css")
-    script(type="module", src="/public/index.js")
+    block scripts
     title Microblog Service
   body
     nav#navbar.navbar
-      if locals.id
+      if locals.role === 'user'
         div.navbar__block
           +link(`/`, 'Home Page')
           +link(`/user_home/${locals.id}`, 'My Posts')
+        div.navbar__block
+          +link('/auth/logout', 'Logout')
+      else if locals.role === 'admin'
+        div.navbar__block
+          +link(`/admin`, 'Admin Page')
         div.navbar__block
           +link('/auth/logout', 'Logout')
       else
@@ -33,6 +51,7 @@ html
         div.navbar__block
           +link('/auth/login', 'Login')
           +link('/auth/register', 'Register')
+
     div.container
       block content
 

@@ -1,14 +1,8 @@
 extends layout
 
+block scripts
+  script(type="module", src="/public/registration.js", defer)
+
 block content
   div.content
-    form(method="POST")#form.form
-      h3.form__title Please register filling the form below
-      div.form__block
-        label(for="login").form__label Enter your login
-        input#login(type="text", name="login", required, placeder="Enter password")
-
-      div.form__block
-        label(for="password").form__label Enter your password
-        input#password(type="password", name="password", required, placeder="Enter password")
-      button#btn-login.button(type="submit") Register
+    +login-template('btn-register', 'Register')

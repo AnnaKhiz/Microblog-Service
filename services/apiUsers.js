@@ -1,9 +1,19 @@
-const { Post, User } = require('../db');
+const { Post, User, ObjectId } = require('../db');
 const { hashPass, checkPass } = require('../utils/auth')
+const { JWTKEY } = require('../config/default');
+const { verifyJwt } = require('../utils/auth');
 
 
-function getUsers() {
-
+async function getUsers(req, res, next) {
+	// const { body: login } = req;
+	// console.log(login)
+	// // const { token } = req.cookies;
+	// // const { userId: id } = await verifyJwt(token, JWTKEY)
+	// //
+	// const users = await User.find()
+	// // // .find( { author: new ObjectId(id)}).populate('author')
+	// // console.log(token)
+	// res.status(200).send(users)
 }
 
 async function loginUser(req, res, next) {
@@ -38,8 +48,16 @@ async function addNewUser(req, res, next) {
 	// return result
 }
 
-function deleteOneUser() {
-
+async function deleteOneUser(req, res, next) {
+	const { login } = req.params;
+	console.log(login)
+	// const { token } = req.cookies;
+	// const { userId: id } = await verifyJwt(token, JWTKEY)
+	//
+	const result = await User.findOneAndDelete({ login })
+	// // .find( { author: new ObjectId(id)}).populate('author')
+	// console.log(token)
+	res.status(200).send(result)
 }
 
 module.exports = {

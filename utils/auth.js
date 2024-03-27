@@ -1,6 +1,26 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { JWTKEY } = require('../config/default');
+
 
 //token generating
+function generateJWt(payload) {
+	return jwt.sign(payload, JWTKEY, { expiresIn: '24h' })
+}
+
+async function verifyJwt(token, secret) {
+	try {
+		const result = await jwt.verify(token, secret);
+		console.log(result)
+		return result
+	} catch (e) {
+		console.log(`Error in verify JWT: ${e}`)
+	}
+}
+
+
+
+
 // export async function generateToken() {
 // 	const token = await TokenGenerator({
 // 		salt: TSALT,
@@ -27,5 +47,7 @@ async function checkPass(textPass, hashedPass) {
 
 module.exports = {
 	hashPass,
-	checkPass
+	checkPass,
+	generateJWt,
+	verifyJwt
 }

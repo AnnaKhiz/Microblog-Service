@@ -90,6 +90,10 @@ h1, h2, h3, h4, h5, h6 {
     color: #242cbb; }
   .content__form {
     margin-bottom: 10px; }
+  .content__comments-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: start; }
 
 .navbar {
   display: flex;

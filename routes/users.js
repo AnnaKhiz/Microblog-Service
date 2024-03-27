@@ -8,6 +8,6 @@ router.post('/:id', loginUser);
 
 router.post('/', addNewUser);
 
-router.delete('/:id', deleteOneUser);
+router.delete('/:login', deleteOneUser);
 
 module.exports = { router }

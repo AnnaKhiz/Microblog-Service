@@ -1,16 +1,22 @@
 const { Post, User, Comment, ObjectId } = require('../db');
+const { verifyJwt } = require('../utils/auth');
+const { JWTKEY } = require('../config/default');
+
 
 async function getPosts(req, res, next) {
-	const { id } = req.cookies;
+	const { token } = req.cookies;
+	const { userId: id } = await verifyJwt(token, JWTKEY)
 
-	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author')
+	const posts = await Post.find()
+		// .find( { author: new ObjectId(id)}).populate('author')
 	// console.log(posts)
 	res.status(200).send({ id, posts })
 	// res.render('index', { id, posts });
 }
 
 async function getPostsId(req, res, next) {
-	const { id } = req.cookies;
+	const { token } = req.cookies;
+	const { userId: id } = await verifyJwt(token, JWTKEY)
 	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author')
 	// console.log(posts)
 	// if (!posts) {
@@ -35,8 +41,9 @@ async function getPostsId(req, res, next) {
 
 async function addNewPost(req, res, next) {
 	const { body: post } = req;
-
-	post.author = new ObjectId(res.cookies.id)
+	const { token } = req.cookies;
+	const { userId: id } = verifyJwt(token, JWTKEY)
+	post.author = new ObjectId(id)
 
 	// console.log(post)
 	const newPost = await new Post(post)
@@ -51,7 +58,10 @@ async function addNewPost(req, res, next) {
 // DELETE POST
 async function deleteOnePost(req, res, next) {
 	const { date: postDate } = req.params;
-	const { id: authorId } = req.cookies;
+
+	const { token } = req.cookies;
+	const { userId: authorId } = await verifyJwt(token, JWTKEY)
+
 
 	// console.log(`postId: ${postDate}`)
 	try {
