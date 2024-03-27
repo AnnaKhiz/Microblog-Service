@@ -18,13 +18,14 @@ loginButton.addEventListener('click', (e) => {
 		})
 			.then(res => res.json())
 			.then(res => {
-				console.log(res)
+
 				if (res.status === 404) {
 					notificationBlock.classList.remove('hidden')
 					notificationText.innerText = res.result
 				} else {
-					notificationBlock.classList.add('hidden')
-					res.role === "user" ? window.location.replace(`/user_home/${res.id}`) : window.location.replace(`/admin`)
+					notificationBlock.classList.add('hidden');
+
+					res.role === "admin" ? window.location.replace(`/admin`) : window.location.replace(`/user_home/${res.id}`)
 				}
 
 			})

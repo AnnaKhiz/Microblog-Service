@@ -17,7 +17,7 @@ router.route('/auth/login')
 
 			if (!result) {
 				console.log('wrong password')
-				return res.status(404).send({"result": "User not found"})
+				return res.send({"result": "Wrong password", "status": 404})
 			}
 
 			req._auth = { role: 'admin', userId: admin._id.toString() };
@@ -101,7 +101,7 @@ router.get('/', protectedRoute(['user', 'unsigned'], '/admin'), async (req,res,n
 		const posts = await Post.find().populate('comments');
 		posts.sort((a,b) => b.date.localeCompare(a.date))
 		// console.log(posts)
-		res.render('index', { posts })
+		res.render('index', { posts });
 	}
 });
 
@@ -140,8 +140,12 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 	post.date = Date.now().toString();
 	post.comments = [];
 
+	const user = await User.findOne( { _id: new ObjectId(id) })
+
 	const newPost = await new Post(post);
 	const result = await newPost.save();
+
+	const newUser = await User.findOneAndUpdate({ _id: new ObjectId(id) } , { $push: { posts: new ObjectId(result._id) }}, { new: true })
 
 	res.status(201).redirect(`/user_home/${id}`);
 

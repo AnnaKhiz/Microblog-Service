@@ -5,12 +5,19 @@ const { JWTKEY } = require('../config/default');
 
 async function getPosts(req, res, next) {
 	const { token } = req.cookies;
-	const { userId: id } = await verifyJwt(token, JWTKEY)
+	if (token) {
+		const { userId: id } = await verifyJwt(token, JWTKEY)
 
-	const posts = await Post.find()
-		// .find( { author: new ObjectId(id)}).populate('author')
-	// console.log(posts)
-	res.status(200).send({ id, posts })
+		const posts = await Post.find()
+		res.status(200).send({ id, posts })
+	} else {
+		const posts = await Post.find()
+		res.status(200).send({ posts })
+	}
+	// const { userId: id } = await verifyJwt(token, JWTKEY)
+	//
+	// const posts = await Post.find()
+
 	// res.render('index', { id, posts });
 }
 
@@ -45,7 +52,11 @@ async function addNewPost(req, res, next) {
 	const { userId: id } = verifyJwt(token, JWTKEY)
 	post.author = new ObjectId(id)
 
-	// console.log(post)
+	const user = User.find( { _id: new ObjectId(id) })
+	user.posts.push(post)
+	console.log('HERE IS NEW POST')
+	console.log(post)
+
 	const newPost = await new Post(post)
 	const result = await newPost.save()
 
@@ -65,12 +76,14 @@ async function deleteOnePost(req, res, next) {
 
 	// console.log(`postId: ${postDate}`)
 	try {
-		// const post = await Post.findOne({ date: postDate})
+		// const post = await Post.findOne({ date: postDate, author: new ObjectId(authorId)})
 		// console.log(post)
+		// await post.remove()
 		const deletedPost = await Post.findOneAndDelete( { date: postDate, author: new ObjectId(authorId)} );
 		if (!deletedPost) {
 			throw new Error('Post did not found');
 		}
+
 		console.log('Post deleted successfully:', deletedPost);
 		res.status(200).send({"result": "Post was deleted successfully"})
 

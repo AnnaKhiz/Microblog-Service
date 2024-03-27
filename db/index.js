@@ -48,17 +48,36 @@ const CommentSchema = new mongoose.Schema({
 	}
 })
 
-PostSchema.pre('remove', async function(next) {
-	const postId = this._id;
+
+PostSchema.pre('findOneAndDelete', async function(next) {
+	const query = this.getQuery();
+	const post = await Post.findOne(query);
 
 	try {
-
-		await Comment.deleteMany({ post: new ObjectId(postId) });
-		await User.deleteMany({ posts: new ObjectId(postId) });
-
+		await mongoose.model('comments').deleteMany( { _id: { $in: post.comments }} );
 		next();
 	} catch (error) {
 		next(error);
+	}
+});
+
+
+UserSchema.pre('findOneAndDelete', async function(next) {
+	const query = this.getQuery();
+
+	try {
+		const user = await User.findOne(query);
+
+		if (!user) {
+			return next(new Error('User not found'));
+		}
+console.log(user)
+		await mongoose.model('posts').deleteMany({ _id: { $in: user.posts } });
+		await mongoose.model('comments').deleteMany({ _id: { $in: user.comments } });
+
+		next();
+	} catch (error) {
+		next(error)
 	}
 });
 
