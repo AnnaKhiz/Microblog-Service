@@ -15,12 +15,14 @@ block content
               if post.comments.length === 0
                 p.content__comments No comments yet
               else
-                each comment in post.comments
-                  p.content__comments= comment.text
+                each comment,number in post.comments
+                  div.content__comments-block
+                    p.content__comments= comment.text
+                    a(href='/api/comments', class= `post-${i}-com-${number}`, data-create= comment.date) Delete comment
           div(data-id= post.date).content__control
             button.comments-btn.button.control Comments
             button.edit-btn.button.control Edit
-            button.del-btn.button.control Delete
+            button.admin-post-del.button.control Delete
   div.content
     p.content__title Users
       each user,i in locals.users
@@ -28,7 +30,7 @@ block content
           div.content__info
             p.content__label= user.login
           div.content__control(data-name= user.login)
-            button.admin-del-btn.button.control Delete
+            button.admin-user-del.button.control Delete
 
 
 

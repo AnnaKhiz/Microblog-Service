@@ -147,7 +147,7 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 
 	const newUser = await User.findOneAndUpdate({ _id: new ObjectId(id) } , { $push: { posts: new ObjectId(result._id) }}, { new: true })
 
-	res.status(201).redirect(`/user_home/${id}`);
+	res.status(201).redirect(`/user_home/${id}`)
 
 
 });

@@ -71,26 +71,32 @@ async function deleteOnePost(req, res, next) {
 	const { date: postDate } = req.params;
 
 	const { token } = req.cookies;
-	const { userId: authorId } = await verifyJwt(token, JWTKEY)
+	const { userId: authorId, role } = await verifyJwt(token, JWTKEY)
+	console.log(role)
 
-
-	// console.log(`postId: ${postDate}`)
-	try {
-		// const post = await Post.findOne({ date: postDate, author: new ObjectId(authorId)})
-		// console.log(post)
-		// await post.remove()
-		const deletedPost = await Post.findOneAndDelete( { date: postDate, author: new ObjectId(authorId)} );
+	if (role === 'admin') {
+		const deletedPost = await Post.findOneAndDelete( { date: postDate} );
 		if (!deletedPost) {
 			throw new Error('Post did not found');
 		}
-
-		console.log('Post deleted successfully:', deletedPost);
 		res.status(200).send({"result": "Post was deleted successfully"})
+	} else {
+		try {
 
-	} catch (error) {
-		console.error('Deleiting error:', error);
-		res.status(404).send({"result": "Post did not found"})
+			const deletedPost = await Post.findOneAndDelete( { date: postDate, author: new ObjectId(authorId)} );
+			if (!deletedPost) {
+				throw new Error('Post did not found');
+			}
+
+			res.status(200).send({"result": "Post was deleted successfully"})
+
+		} catch (error) {
+			console.error('Deleiting error:', error);
+			res.status(404).send({"result": "Post did not found"})
+		}
 	}
+
+
 
 }
 

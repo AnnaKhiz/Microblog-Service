@@ -1,4 +1,3 @@
-
 const commentsButton = [...document.querySelectorAll('.comments-btn')];
 const commentsContainer = [...document.querySelectorAll('div.comments-container')];
 const addCommentButton = document.getElementById('comment-add-btn');

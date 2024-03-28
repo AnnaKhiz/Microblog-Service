@@ -28,11 +28,19 @@ async function addComment(req, res, next) {
 }
 
 async function deleteComment(req, res, next) {
-	const { date } = req.params
+	const { date, postName } = req.params
+	console.log(`postName: ${postName}`)
 	const { targetpost: postId, token } = req.cookies
-	const { userId: id } = await verifyJwt(token, JWTKEY)
-	const comments = await Comment.findOneAndDelete({ user: new ObjectId(id), post: new ObjectId(postId), date: date})
-	comments ? res.send({"result": "Comment was deleted", "status": 200}) : res.send({"result": "Comment did not deleted", "status": 404})
+	const { userId: id, role } = await verifyJwt(token, JWTKEY)
+	if (role === 'admin') {
+		//нужно указать id автора
+		const comments = await Comment.findOneAndDelete({ user: new ObjectId(id), post: new ObjectId(postId), date: date})
+		comments ? res.send({"result": "Comment was deleted", "status": 200}) : res.send({"result": "Comment did not deleted", "status": 404})
+	} else {
+		const comments = await Comment.findOneAndDelete({ user: new ObjectId(id), post: new ObjectId(postId), date: date})
+		comments ? res.send({"result": "Comment was deleted", "status": 200}) : res.send({"result": "Comment did not deleted", "status": 404})
+	}
+
 }
 
 module.exports = {
