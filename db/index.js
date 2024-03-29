@@ -1,6 +1,5 @@
 const { DBURL } = require('../config/default');
 const { MongoClient, ObjectId } = require('mongodb');
-// const client = new MongoClient(DBURL);
 const mongoose = require('mongoose');
 
 const AdminSchema = new mongoose.Schema({
@@ -51,7 +50,6 @@ const CommentSchema = new mongoose.Schema({
 
 PostSchema.pre('findOneAndDelete', async function(next) {
 	const query = this.getQuery();
-
 
 	try {
 		const post = await Post.findOne(query);
