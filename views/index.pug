@@ -30,7 +30,7 @@ block content
               div.content__control(data-id= post.date)
                 button.comments-btn.button.control Comments
           div.content__info.text
-            p(id= `cutted-desc-${i}`).content__description= post.description.length > 5 ? post.description.slice(0, 5) + ` ...` : post.description
+            p(id= `cutted-desc-${i}`).content__description= post.description.length > 100 ? post.description.slice(0, 100) + ` ...` : post.description
             p
               pre(id= `full-desc-${i}`).content__description.hidden= post.description
           div.comments-container.content__comments-container.hidden

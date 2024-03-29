@@ -10,6 +10,7 @@ const notificationBlock = document.getElementById('notification-block');
 const notificationText = document.getElementById('notification');
 const currentUrl = location.href;
 const createButton = document.getElementById('create-post');
+const postLabelBlock = [...document.querySelectorAll('.content__info')];
 
 if (createButton) {
 	createButton.addEventListener('click', (e) => {
@@ -19,12 +20,16 @@ if (createButton) {
 }
 
 
-
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
 		e.preventDefault();
 		const target = e.target.parentElement.dataset.id;
 		commentsContainer[index].classList.toggle('hidden');
+
+		const commentBlockLabel = [...document.querySelectorAll('.content__comments-title')];
+		commentBlockLabel[index].classList.add('checked');
+		const commentTextBlock = [...document.querySelectorAll('.content__comments-block')];
+		commentTextBlock.forEach(e => e.classList.add('checked'));
 
 		fetch('/api/posts').then(res => res.json()).then(res => {
 			const result = res.posts;
@@ -84,10 +89,13 @@ function toggleCommentForm(index, element) {
 		element.innerText = 'Hide';
 		preview.classList.add('hidden');
 		fullDescription.classList.remove('hidden')
+		postLabelBlock[index].classList.add('checked');
+		fullDescription.classList.add('checked');
 	} else {
 		element.innerText = 'Comments'
-		preview.classList.remove('hidden');
-		fullDescription.classList.add('hidden')
+		element.classList.remove('hidden');
+		fullDescription.classList.add('hidden');
+		postLabelBlock[index].classList.remove('checked');
 	}
 }
 

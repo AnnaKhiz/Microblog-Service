@@ -2,13 +2,19 @@ const deleteUserButton = [...document.querySelectorAll('.admin-user-del')];
 const deletePostButton = [...document.querySelectorAll('.admin-post-del')];
 const commentsButton = [...document.querySelectorAll('.comments-btn')];
 const commentsContainer = [...document.querySelectorAll('div.comments-container')];
-const deleteCommentButton = [...document.querySelectorAll('.admin-post-del')];
+const deleteCommentButton = [...document.querySelectorAll('.admin-post-del')]
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
 		e.preventDefault();
 		const target = e.target.parentElement.dataset.id
 		commentsContainer[index].classList.toggle('hidden');
+
+		const commentBlockLabel = [...document.querySelectorAll('.content__comments-title')];
+		commentBlockLabel[index].classList.add('checked');
+		const commentTextBlock = [...document.querySelectorAll('.content__comments-block')];
+		commentTextBlock.forEach(e => e.classList.add('checked'));
+
 
 		fetch('/api/posts').then(res => res.json()).then(res => {
 			const result = res.posts
