@@ -36,7 +36,8 @@ block content
           div.comments-container.content__comments-container.hidden
             p.content__comments-title Comments
             if post.comments.length === 0
-              p.content__comments No comments yet
+              div.content__comments-block
+                p.content__comments No comments yet
             else
               each comment,number in post.comments
                 div.content__comments-block

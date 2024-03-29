@@ -28,8 +28,6 @@ commentsButton.forEach((element, index) => {
 
 		const commentBlockLabel = [...document.querySelectorAll('.content__comments-title')];
 		commentBlockLabel[index].classList.add('checked');
-		const commentTextBlock = [...document.querySelectorAll('.content__comments-block')];
-		commentTextBlock.forEach(e => e.classList.add('checked'));
 
 		fetch('/api/posts').then(res => res.json()).then(res => {
 			const result = res.posts;
