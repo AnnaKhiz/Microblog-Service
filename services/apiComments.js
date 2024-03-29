@@ -7,6 +7,7 @@ async function addComment(req, res, next) {
 
 	const { token } = req.cookies;
 	const { userId: id } = await verifyJwt(token, JWTKEY);
+	//! те про що я казав десь раніше. Не розмазуй парсінг токена по всому серверу. Зроби з цього один мідлвер
 
 	comment.date = Date.now().toString();
 	comment.user = new ObjectId(id);

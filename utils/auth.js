@@ -13,6 +13,7 @@ async function verifyJwt(token, secret) {
 		return result
 	} catch (e) {
 		console.log(`Error in verify JWT: ${e}`)
+		//! якщо невалідний токен або його немає - що буде? правильно, все попадає) чогось тут не вистачає
 	}
 }
 

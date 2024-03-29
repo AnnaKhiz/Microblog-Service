@@ -32,6 +32,8 @@ loginButton.addEventListener('click', (e) => {
 	}
 })
 
+//! одне й те саме в логіні і реджистері. Зможеш спростити?
+
 function checkEmptyFields() {
 	if (inputLogin.value.replaceAll(' ', '') === '' || inputPass.value.replaceAll(' ', '') === '') {
 		notificationBlock.classList.remove('hidden');

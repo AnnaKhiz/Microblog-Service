@@ -48,7 +48,7 @@ async function deleteOnePost(req, res, next) {
 			const deletedPost = await Post.findOneAndDelete( { date: postDate} );
 			checkExistingPost( deletedPost , res)
 		} catch (error) {
-			res.status(404).send({"result": "Post did not found"});
+			res.status(404).send({"result": "Post did not found"}); //! те ж саме що і в функції внизу. Можем обійтись без такиї повторів? Або тоді взагалі нащо було виносити окремо...
 		}
 
 	} else {
@@ -62,6 +62,7 @@ async function deleteOnePost(req, res, next) {
 	}
 }
 
+//! checkExistingPost - назва натякає що тут перевірка чи існує пост. І тоді це дуже конф'юзить коли бачиш що воно викликається ПІСЛЯ операції деліт...
 async function checkExistingPost( deletedPost, res ) {
 	if (deletedPost == '' || deletedPost == undefined) {
 		res.status(404).send({"result": "Post did not found"});
@@ -79,7 +80,7 @@ async function updateOnePost(req, res, next) {
 		);
 
 		if (!updatedPost) {
-			res.status(404).send({"result": "Post did not found"});
+			res.status(404).send({"result": "Post did not found"}); //! багато самоповторів. Спробуй це якось порішати
 		}
 
 		res.status(200).send({"result": "Post was updated successfully"})

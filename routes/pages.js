@@ -58,6 +58,8 @@ router.route('/auth/register')
 		try {
 			const newUser = await new User(user)
 			const result = await newUser.save()
+
+			//! багато знаєш сайтів, які після реєстрації тебе одразу попросять логінитись? ) чому б одразу не створити токен і не редіректнути на хоум?
 			res.status(201).send({"result": "Registration was successful. Please log in", "status": 201})
 			return result
 		} catch (error) {
@@ -66,6 +68,10 @@ router.route('/auth/register')
 			}
 		}
 	});
+
+//! робота з авторізацією і токенами по хорошому має бути інкапсульована в мідлвер, а у тебе я бачу воно розмазано всюди)
+//! спробуй зробити один мідлвер що буде парсити токен і додавати знайдену інфу в request. А все інше налаштуй так щоб там де
+//! потрібна авторізація - дані діставались вже із request ПІСЛЯ того як туда їх запхне твій мідлвер
 
 
 router.get('/', protectedRoute(['user', 'unsigned'], '/admin'), async (req,res,next) => {
@@ -105,6 +111,7 @@ router.route('/auth/logout')
 		res.redirect('/');
 	});
 
+//??? тут щось зайве відбувається, розберись пліз і викинь те що не потрібно
 router.post('/user_home/:id', express.urlencoded({ extended: false }), async (req, res, next) => {
 
 	const { body: post } = req;

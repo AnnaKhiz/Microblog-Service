@@ -19,6 +19,7 @@ if (createButton) {
 	});
 }
 
+//! буде 100 коментів - додаш 100 івент лістенерів? ))
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
@@ -33,10 +34,12 @@ commentsButton.forEach((element, index) => {
 
 		fetch('/api/posts').then(res => res.json()).then(res => {
 			const result = res.posts;
+
+			//? тут схоже якийсь суровий оверкіл з циклами-в-циклах...
 			result.forEach((post, i) => {
 				if (post.date === target) {
 
-					document.cookie = `targetpost=${post._id}; expires=0; path=/`;
+					document.cookie = `targetpost=${post._id}; expires=0; path=/`; //??? для чого?
 
 					const sendCommentButton = document.getElementById(`comment-submit-btn-${index}`);
 					const textCommentField = document.getElementById(`comment-input-${index}`);
