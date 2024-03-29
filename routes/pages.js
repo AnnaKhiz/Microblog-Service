@@ -3,9 +3,9 @@ const router = express.Router();
 const { Post, User, Comment, Admin, ObjectId } = require('../db')
 const { hashPass, checkPass, generateJWt, verifyJwt } = require('../utils/auth')
 const { AddNewPost, deleteOnePost } = require('../services/apiPosts');
-const { JWTKEY } = require('../config/default')
+const { JWTKEY } = require('../config/default');
+const { protectedRoute } = require('../middleware/route');
 
-// LOGIN
 router.route('/auth/login')
 	.get((_req, res) => res.render('login'))
 	.post(express.urlencoded({ extended: false }), async (req, res, next) => {
@@ -35,7 +35,6 @@ router.route('/auth/login')
 			const result = await checkPass(password, user.password);
 
 			if (!result) {
-				console.log('wrong password')
 				return res.send({"result": "Wrong password", "status": 404})
 			}
 
@@ -53,7 +52,6 @@ router.route('/auth/register')
 	.post(express.urlencoded({ extended: false }), async (req, res, next) => {
 
 		const { body: user } = req;
-		// console.log(user)
 		user.posts = []
 		user.comments = []
 		user.password = await hashPass(user.password)
@@ -64,22 +62,11 @@ router.route('/auth/register')
 			return result
 		} catch (error) {
 			if (error.code === 11000) {
-				console.log('Login exist');
 				res.status(401).send({"result": "User with this login already exist", "status": 401})
 			}
 		}
 	});
 
-const protectedRoute = (allowedRoles = [], redirectTo = '/auth/login') => function (req, resp, next) {
-	const { role = 'unsigned' } = req._auth || {};
-
-	if (!allowedRoles.includes(role)) {
-		console.log(`Role [${role}] is not allowed for [${req.url}]`);
-		return resp.redirect(redirectTo);
-	}
-
-	next();
-}
 
 router.get('/', protectedRoute(['user', 'unsigned'], '/admin'), async (req,res,next) => {
 	const { token } = req.cookies;

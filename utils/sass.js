@@ -2,8 +2,6 @@ const sass = require('node-sass');
 const fs = require('fs');
 const path = require('path');
 
-
-
 sass.render({
 	file: path.join('./', 'src', 'sass', 'style.sass'),
 	outFile: path.join('./', 'static', 'css', 'style.css')

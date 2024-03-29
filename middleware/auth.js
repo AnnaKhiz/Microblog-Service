@@ -1,4 +1,3 @@
-// const config = require('config');
 const { JWTKEY } = require('../config/default')
 const { verifyJwt, generateJWt } = require('../utils/auth');
 
@@ -10,9 +9,6 @@ function parserJwt(req, resp, next) {
 		req._auth = payload;
 	}
 	req._auth = {}
-	// console.log(payload)
-	// req.Authorization = `Bearer ${token}`
-
 	next();
 }
 
