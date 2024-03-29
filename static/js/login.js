@@ -20,18 +20,16 @@ loginButton.addEventListener('click', (e) => {
 			.then(res => {
 
 				if (res.status === 404) {
-					notificationBlock.classList.remove('hidden')
+					notificationBlock.classList.remove('hidden');
+					notificationText.classList.remove('success');
 					notificationText.innerText = res.result
 				} else {
 					notificationBlock.classList.add('hidden');
-
+					notificationText.classList.add('success');
 					res.role === "admin" ? window.location.replace(`/admin`) : window.location.replace(`/user_home/${res.id}`)
 				}
-
 			})
 	}
-
-
 })
 
 function checkEmptyFields() {

@@ -1,7 +1,8 @@
 extends layout
 
 block scripts
-  script(type="module", src="/public/user-page.js", defer)
+  script(type="module", src="/public/js/index.js", defer)
+  script(type="module", src="/public/js/user-page.js", defer)
 
 block content
   div.content
@@ -16,31 +17,36 @@ block content
       each post,i in locals.posts
         div.content__block
           div.content__info
-            p.content__label= post.name
-            p= post.description
-            div.comments-container.content__comments-container.hidden
-              if post.comments.length === 0
-                p.content__comments No comments yet
-              else
-                each comment,number in post.comments
-                  div.content__comments-block
-                    p.content__comments= comment.text
-                    if comment.user == locals.id
-                      a(href='/api/comments', class= `post-${i}-com-${number}`, data-create= comment.date) Delete comment
-              if locals.id
-                form(method="POST", action="/user_home/:id").form-comment.content__form.hidden
-                  textarea(id=`comment-input-${i}`, placeholder="Enter your comment", name="text", required, rows="3", width="100%", class="comment")
-                  button.button.control(id=`comment-submit-btn-${i}`, type="submit")= `Send`
-
+            a(href="#").content__label= post.name
+            if locals.id
+              div.content__control
+                img(src="/public/img/icons24.png", alt="icon", class="content__icon")
+                div.content__control-dropdown.hidden(data-id= post.date)
+                  button.comments-btn.button.control Comments
+                    if locals.id === post.author.id
+                      button.edit-btn.button.control Edit
+                      button.del-btn.button.control Delete
+            else
+              div.content__control(data-id= post.date)
+                button.comments-btn.button.control Comments
+          div.content__info.text
+            p(id= `cutted-desc-${i}`).content__description= post.description.length > 5 ? post.description.slice(0, 5) + ` ...` : post.description
+            p
+              pre(id= `full-desc-${i}`).content__description.hidden= post.description
+          div.comments-container.content__comments-container.hidden
+            p.content__comments-title Comments
+            if post.comments.length === 0
+              p.content__comments No comments yet
+            else
+              each comment,number in post.comments
+                div.content__comments-block
+                  p.content__comments= comment.text
+                  if comment.user == locals.id
+                    a(href='/api/comments', class= `post-${i}-com-${number}`)
+                      img(src='/public/img/icon-del.png', alt='delete icon', data-create= comment.date)
           if locals.id
-            div(data-id= post.date).content__control
-              button.comments-btn.button.control Comments
-              if locals.id === post.author.id
-                button.edit-btn.button.control Edit
-                button.del-btn.button.control Delete
-          else
-            div.content__control(data-id= post.date)
-              button.comments-btn.button.control Comments
-
+            form(method="POST", action="/user_home/:id").form-comment.content__form.hidden
+              textarea(id=`comment-input-${i}`, placeholder="Enter your comment", name="text", required, rows="3", width="100%", class="comment")
+              button.button.control(id=`comment-submit-btn-${i}`, type="submit")= `Send`
 
 

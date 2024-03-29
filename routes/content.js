@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { getPosts, getPostsId, addNewPost, deleteOnePost, updateOnePost } = require('../services/apiPosts.js');
 
-
 router.get('/', getPosts);
 
 router.get('/:id', getPostsId);

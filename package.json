@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/AnnaKhiz/Microblog-Service#readme",
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",

@@ -13,19 +13,17 @@ const { PORT } = require('./config/default');
 const cookieParser = require('cookie-parser');
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-server.use(cookieParser())
+server.use(cookieParser());
+
 const jsonBodyParser = express.json();
-server.use(jsonBodyParser)
-server.use(parserJwt)
+server.use(jsonBodyParser);
+
+server.use(parserJwt);
 
 server.use('/public', express.static('static'));
 server.set('view engine', 'pug');
 
-// server.get('/', (req, res) => {
-// 	res.render('index', {id, posts})
-// })
 server.use(express.urlencoded({ extended: true }));
-
 
 
 server.use('/api/users', userRouter);

@@ -4,7 +4,6 @@ const commentsButton = [...document.querySelectorAll('.comments-btn')];
 const commentsContainer = [...document.querySelectorAll('div.comments-container')];
 const deleteCommentButton = [...document.querySelectorAll('.admin-post-del')];
 
-console.log(deletePostButton)
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
 		e.preventDefault();
@@ -23,25 +22,17 @@ commentsButton.forEach((element, index) => {
 
 					deleteComment.forEach(el => {
 						el.addEventListener('click', (e) => {
+							console.log(el)
 							e.preventDefault();
-							const createdPostData = e.target.dataset.create
-							console.log(createdPostData)
-
-							fetch(`/api/comments/${createdPostData}`, { method: 'DELETE' })
-								.then(result => result.json())
-								.then(result => {
-
-									if (result.status === 200) {
-										window.location.reload()
-									}
-								})
+							const createdPostData = e.target.dataset.create;
+							deleteCommentRequest(createdPostData);
 						})
 					})
-
 				}
 			})
 		})
 
+		toggleButtonText(index, element);
 
 	})
 })
@@ -50,18 +41,46 @@ deletePostButton.forEach(button => {
 	button.addEventListener('click', (e) => {
 		e.preventDefault();
 		const target = e.target.parentElement.dataset.id
-		console.log(target)
-		fetch(`/api/posts/${target}`, { method: 'DELETE' })
-			.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
+
+		deletePostRequest(target)
 	})
 })
 
 deleteUserButton.forEach(button => {
 	button.addEventListener('click', (e) => {
 		e.preventDefault();
-		const target = e.target.parentElement.dataset.name
+		const target = e.target.dataset.name;
 
-		fetch(`/api/users/${target}`, { method: 'DELETE' })
-			.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
+		deleteUserRequest(target);
+
 	})
 })
+
+function deleteUserRequest(target) {
+	fetch(`/api/users/${target}`, { method: 'DELETE' })
+		.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
+}
+
+function deleteCommentRequest(createdPostData) {
+	fetch(`/api/comments/${createdPostData}`, { method: 'DELETE' })
+		.then(result => result.json())
+		.then(result => {
+
+			if (result.status === 200) {
+				window.location.reload()
+			}
+		})
+}
+
+function toggleButtonText(index, element) {
+	if (!commentsContainer[index].classList.contains('hidden')) {
+		element.innerText = 'Hide';
+	} else {
+		element.innerText = 'Comments'
+	}
+}
+
+function deletePostRequest(target) {
+	fetch(`/api/posts/${target}`, { method: 'DELETE' })
+		.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
+}

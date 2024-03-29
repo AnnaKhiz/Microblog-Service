@@ -24,13 +24,13 @@ mixin login-template(idButton, nameButton)
       input(id='password', type="password", name="password", required, placeder="Enter password")
     button.button(id= idButton, type="submit")= nameButton
     div.hidden#notification-block
-      p#notification= ''
+      p#notification.form__notification= ''
 
 
 
 html
   head
-    link(rel="stylesheet" href="/public/style.css")
+    link(rel="stylesheet" href="/public/css/style.css")
     block scripts
     title Microblog Service
   body

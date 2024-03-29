@@ -82,25 +82,16 @@ const protectedRoute = (allowedRoles = [], redirectTo = '/auth/login') => functi
 }
 
 router.get('/', protectedRoute(['user', 'unsigned'], '/admin'), async (req,res,next) => {
-
 	const { token } = req.cookies;
-	// console.log(req._auth)
 
-	// const { userId: id, role = '' } = await verifyJwt(token, JWTKEY)
+	const posts = await Post.find().populate('comments');
+	posts.sort((a,b) => b.date.localeCompare(a.date));
 
 	if (token) {
-		// const { userId: id, role = '' } = req._auth;
-		// const authorId = role === 'user' ? userId : -1;
-		const posts = await Post.find().populate('comments')
-		posts.sort((a,b) => b.date.localeCompare(a.date))
 		const { userId: id, role } = await verifyJwt(token, JWTKEY);
-		console.log('role ' + role)
-
 		role === 'admin' ? res.redirect('/admin') : res.render('index', { id, posts, role })
+
 	} else {
-		const posts = await Post.find().populate('comments');
-		posts.sort((a,b) => b.date.localeCompare(a.date))
-		// console.log(posts)
 		res.render('index', { posts });
 	}
 });
@@ -108,26 +99,23 @@ router.get('/', protectedRoute(['user', 'unsigned'], '/admin'), async (req,res,n
 
 // USER HOME
 router.get(`/user_home/:id`, async (req,res,next) => {
-	// const { id } = req.params;
 	const { token } = req.cookies;
-	const { userId: id, role } = await verifyJwt(token, JWTKEY)
-	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author').populate('comments')
-	// console.log(posts)
+	const { userId: id, role } = await verifyJwt(token, JWTKEY);
+	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author').populate('comments');
+
 	if (!posts) {
-		res.send({"result": "No posts"})
+		res.send({"result": "No posts"});
 	}
-	posts.sort((a,b) => b.date.localeCompare(a.date))
+	posts.sort((a,b) => b.date.localeCompare(a.date));
 	res.render('index', { id, posts, role });
 })
-
-
 
 //LOGOUT
 router.route('/auth/logout')
 	.get((_req, res) => {
-		res.clearCookie('token')
-		res.clearCookie('targetpost')
-		res.redirect('/')
+		res.clearCookie('token');
+		res.clearCookie('targetpost');
+		res.redirect('/');
 	});
 
 router.post('/user_home/:id', express.urlencoded({ extended: false }), async (req, res, next) => {
@@ -135,8 +123,8 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 	const { body: post } = req;
 
 	const { token } = req.cookies;
-	const { userId: id } = await verifyJwt(token, JWTKEY)
-	post.author = new ObjectId(id)
+	const { userId: id } = await verifyJwt(token, JWTKEY);
+	post.author = new ObjectId(id);
 	post.date = Date.now().toString();
 	post.comments = [];
 
@@ -147,8 +135,7 @@ router.post('/user_home/:id', express.urlencoded({ extended: false }), async (re
 
 	const newUser = await User.findOneAndUpdate({ _id: new ObjectId(id) } , { $push: { posts: new ObjectId(result._id) }}, { new: true })
 
-	res.status(201).redirect(`/user_home/${id}`)
-
+	res.status(201).redirect(`/user_home/${id}`);
 
 });
 
@@ -159,15 +146,19 @@ router.get('/admin', async (req,res) => {
 	if (!token) {
 		req._auth = {}
 		return res.redirect('/auth/login');
+
 	} else {
-		const { role } = await verifyJwt(token, JWTKEY)
+		const { role } = await verifyJwt(token, JWTKEY);
+
 		if (role !== 'admin') {
 			res.redirect('/auth/login')
 		}
-		console.log(role)
+
 		const users = await User.find().populate('posts').populate('comments');
 		const posts = await Post.find().populate('author').populate('comments');
-		const comments = await Comment.find().populate('post').populate('user')
+		const comments = await Comment.find().populate('post').populate('user');
+
+		posts.sort((a,b) => b.date.localeCompare(a.date));
 		res.render('admin_home', { users, posts, comments, role });
 	};
 
