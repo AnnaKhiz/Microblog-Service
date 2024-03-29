@@ -14,7 +14,7 @@ block content
       div.admin-content__tab-content#content-1
         each post,i in locals.posts
           div.content__block
-            div.content__info
+            div.content__info.header
               a(href="#").content__label= post.name
               div.content__control
                 img(src="/public/img/icons24.png", alt="icon", class="content__icon")
@@ -28,7 +28,8 @@ block content
             div.comments-container.content__comments-container.hidden
               p.content__comments-title Comments
               if post.comments.length === 0
-                p.content__comments No comments yet
+                div.content__comments-block
+                  p.content__comments No comments yet
               else
                 each comment,number in post.comments
                   div.content__comments-block
@@ -43,8 +44,3 @@ block content
             div.content__control
               a(href='/api/comments', class= `post-${i}-com-${number}`)
                 img(src='/public/img/icon-del.png', alt='delete icon', data-name= user.login).admin-user-del
-
-
-
-
-

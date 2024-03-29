@@ -10,7 +10,7 @@ const notificationBlock = document.getElementById('notification-block');
 const notificationText = document.getElementById('notification');
 const currentUrl = location.href;
 const createButton = document.getElementById('create-post');
-const postLabelBlock = [...document.querySelectorAll('.content__info')];
+const postLabelBlock = [...document.querySelectorAll('.content__info.header')];
 
 if (createButton) {
 	createButton.addEventListener('click', (e) => {
@@ -28,6 +28,8 @@ commentsButton.forEach((element, index) => {
 
 		const commentBlockLabel = [...document.querySelectorAll('.content__comments-title')];
 		commentBlockLabel[index].classList.add('checked');
+		const commentTextBlock = [...document.querySelectorAll('.content__comments-block')];
+		commentTextBlock.forEach(e => e.classList.add('checked'));
 
 		fetch('/api/posts').then(res => res.json()).then(res => {
 			const result = res.posts;
@@ -40,7 +42,7 @@ commentsButton.forEach((element, index) => {
 					const textCommentField = document.getElementById(`comment-input-${index}`);
 					const deleteComment = [...document.querySelectorAll(`[class*="post-${index}"]`)];
 
-					deleteCurrentComment(deleteComment);
+					deleteCurrentComment(deleteComment, post);
 
 					sendCommentButton.addEventListener('click', (e) => {
 						e.preventDefault();
@@ -109,10 +111,11 @@ function addNewCommentQuery(post, sendCommentButton, textCommentField) {
 			.then(res => res.status === 201 ? window.location.reload() : console.log('Commenting error'))
 }
 
-function deleteCurrentComment(deleteComment) {
+function deleteCurrentComment(deleteComment, post) {
 	deleteComment.forEach(el => {
 		el.addEventListener('click', (e) => {
 			e.preventDefault();
+			document.cookie = `targetpost=${post._id}; expires=0; path=/`;
 			const createdPostData = e.target.dataset.create;
 			getCurrentCommentQuery(createdPostData);
 		})

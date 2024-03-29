@@ -2,7 +2,8 @@ const deleteUserButton = [...document.querySelectorAll('.admin-user-del')];
 const deletePostButton = [...document.querySelectorAll('.admin-post-del')];
 const commentsButton = [...document.querySelectorAll('.comments-btn')];
 const commentsContainer = [...document.querySelectorAll('div.comments-container')];
-const deleteCommentButton = [...document.querySelectorAll('.admin-post-del')]
+const deleteCommentButton = [...document.querySelectorAll('.admin-post-del')];
+const postLabelBlock = [...document.querySelectorAll('.content__info.header')];
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
@@ -12,6 +13,8 @@ commentsButton.forEach((element, index) => {
 
 		const commentBlockLabel = [...document.querySelectorAll('.content__comments-title')];
 		commentBlockLabel[index].classList.add('checked');
+		const commentTextBlock = [...document.querySelectorAll('.content__comments-block')];
+		commentTextBlock.forEach(e => e.classList.add('checked'));
 
 		fetch('/api/posts').then(res => res.json()).then(res => {
 			const result = res.posts
@@ -25,8 +28,8 @@ commentsButton.forEach((element, index) => {
 
 					deleteComment.forEach(el => {
 						el.addEventListener('click', (e) => {
-							console.log(el)
 							e.preventDefault();
+							document.cookie = `targetpost=${post._id}; expires=0; path=/`
 							const createdPostData = e.target.dataset.create;
 							deleteCommentRequest(createdPostData);
 						})
@@ -76,10 +79,20 @@ function deleteCommentRequest(createdPostData) {
 }
 
 function toggleButtonText(index, element) {
+	const preview = document.getElementById(`cutted-desc-${index}`);
+	const fullDescription = document.getElementById(`full-desc-${index}`);
+
 	if (!commentsContainer[index].classList.contains('hidden')) {
 		element.innerText = 'Hide';
+		preview.classList.add('hidden');
+		fullDescription.classList.remove('hidden')
+		postLabelBlock[index].classList.add('checked');
+		fullDescription.classList.add('checked');
 	} else {
 		element.innerText = 'Comments'
+		element.classList.remove('hidden');
+		fullDescription.classList.add('hidden');
+		postLabelBlock[index].classList.remove('checked');
 	}
 }
 

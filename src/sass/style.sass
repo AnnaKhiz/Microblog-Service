@@ -60,12 +60,13 @@
     display: flex
     justify-content: space-between
     align-items: flex-start
+    &.header
+      &.checked
+        border-bottom: 1px solid #2f2b2b24
+        background-color: aliceblue
+        padding: 10px
     &.text
       justify-content: flex-start
-    &.checked
-      border-bottom: 1px solid #2f2b2b24
-      background-color: aliceblue
-      padding: 10px
   &__comments-container
     width: 100%
     padding-top: 20px
@@ -91,6 +92,7 @@
     align-items: start
     border-bottom: 1px solid rgba(205, 205, 205, 0.18)
     padding: 20px 10px 20px 20px
+    font: 400 1rem/1.3rem "Times New Roman", sans-serif
 
 .navbar
   display: flex

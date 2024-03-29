@@ -16,7 +16,7 @@ block content
     else
       each post,i in locals.posts
         div.content__block
-          div.content__info
+          div.content__info.header
             a(href="#").content__label= post.name
             if locals.id
               div.content__control
