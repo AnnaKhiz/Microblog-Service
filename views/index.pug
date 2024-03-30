@@ -1,6 +1,7 @@
 extends layout
 
 block scripts
+  script(type="module", src="/public/js/pagination.js", defer)
   script(type="module", src="/public/js/user-page.js", data-posts=JSON.stringify(locals.posts), defer)
 
 block content
@@ -48,5 +49,5 @@ block content
             form(method="POST", action="/user_home/:id").form-comment.content__form.hidden
               textarea(id=`comment-input-${i}`, placeholder="Enter your comment", name="text", required, rows="3", width="100%", class="comment")
               button.button.control(id=`comment-submit-btn-${i}`, type="submit")= `Send`
-
+      div#pagination.pagination
 

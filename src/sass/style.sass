@@ -219,5 +219,22 @@ input, textarea
     display: none
     width: 100%
     margin-top: 1rem
+.pagination
+  display: flex
+  justify-content: flex-start
+  column-gap: 10px
+  & button
+    padding: 5px 8px
+    background-color: aliceblue
+    transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out
+    font-size: 1.1rem
+    color: black
+    &:hover
+      background-color: #bc99fc
+      transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out
+      color: white
+    &.checked
+      background-color: #673ab7
+      color: white
 
 

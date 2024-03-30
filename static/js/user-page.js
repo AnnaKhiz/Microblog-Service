@@ -215,3 +215,8 @@ function getCurrentDataFromTemplate() {
 
 	return posts
 }
+
+var currentPage = 1;
+var recordsPerPage = 10;
+const posts = getCurrentDataFromTemplate();
+
