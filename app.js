@@ -22,7 +22,6 @@ server.set('view engine', 'pug');
 
 server.use(express.urlencoded({ extended: true }));
 
-
 server.use('/api/users', userRouter);
 server.use('/api/posts', contentRouter);
 server.use('/api/comments', commentsRouter);

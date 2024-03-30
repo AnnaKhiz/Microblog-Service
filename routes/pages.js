@@ -17,7 +17,6 @@ router.route('/auth/login')
 			const result = await checkPass(password, admin.password);
 
 			if (!result) {
-				console.log('wrong password')
 				return res.send({"result": "Wrong password", "status": 404})
 			}
 
@@ -130,7 +129,6 @@ router.get('/admin', parserJwt, async (req,res) => {
 })
 
 router.get('/*', (req, res) => {
-	console.log(`Page not found`);
 	res.redirect('/');
 })
 
