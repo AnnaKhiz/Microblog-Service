@@ -1,0 +1,53 @@
+extends layout
+
+block scripts
+  script(type="module", src="/public/js/pagination.js", defer)
+  script(type="module", src="/public/js/user-page.js", data-posts=JSON.stringify(locals.posts), defer)
+
+block content
+  div.content
+    p.content__title Posts
+    if locals.id
+      button#create-post.button Create post
+      +add-post-form('add', 'add-close', 'Publish', 'btn-publish', 'name', 'description')
+      +add-post-form('edit', 'edit-close', 'Send changes', 'btn-save', 'edit-name', 'edit-description')
+    if locals.posts.length === 0
+      p.content__warning You don't have any posts yet. Create first right now.
+    else
+      each post,i in locals.posts
+        div.content__block
+          div.content__info.header
+            a(href="#").content__label= post.name
+            if locals.id
+              div.content__control
+                img(src="/public/img/icons24.png", alt="icon", class="content__icon")
+                div.content__control-dropdown.hidden(data-id= post.id)
+                  button.comments-btn.button.control Comments
+                    if locals.id === post.author.id
+                      button.edit-btn.button.control Edit
+                      button.del-btn.button.control Delete
+            else
+              div.content__control(data-id= post.id)
+                button.comments-btn.button.control Comments
+          div.content__info.text
+            p(id= `cutted-desc-${i}`).content__description= post.description.length > 100 ? post.description.slice(0, 100) + ` ...` : post.description
+            p
+              pre(id= `full-desc-${i}`).content__description.hidden= post.description
+          div.comments-container.content__comments-container.hidden
+            p.content__comments-title Comments
+            if post.comments.length === 0
+              div.content__comments-block
+                p.content__comments No comments yet
+            else
+              each comment,number in post.comments
+                div.content__comments-block
+                  p.content__comments= comment.text
+                  if comment.user == locals.id
+                    a(href='/api/comments', class= `post-${i}-com-${number}`)
+                      img(src='/public/img/icon-del.png', alt='delete icon', data-create= comment.date)
+          if locals.id
+            form(method="POST", action="/user_home/:id").form-comment.content__form.hidden
+              textarea(id=`comment-input-${i}`, placeholder="Enter your comment", name="text", required, rows="3", width="100%", class="comment")
+              button.button.control(id=`comment-submit-btn-${i}`, type="submit")= `Send`
+      div#pagination.pagination
+

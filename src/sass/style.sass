@@ -1,0 +1,240 @@
+@import "style-reset.sass"
+
+.container
+  margin: 0 20px
+
+.content
+  $root: &
+  padding: 15px
+  &__title
+    font: 600 1.5rem/1.5rem "Times New Roman", sans-serif
+    color: #673ab7
+    margin-bottom: 30px
+  &__block
+    margin-bottom: 15px
+    min-height: 70px
+    padding: 10px
+    box-shadow: 1px 1px 5px 0px #dfc9ff
+    cursor: pointer
+    &.user
+      display: flex
+      justify-content: space-between
+      align-items: flex-start
+  &__label
+    display: block
+    color: #673ab7
+    margin-bottom: 10px
+    font-weight: 600
+    font-size: 1.2rem
+    &:hover
+      text-decoration: underline
+  &__description
+    white-space: pre-wrap
+    color: black
+    font: 400 1rem/1.3rem "Times New Roman", sans-serif
+    &.checked
+      padding: 20px 20px 0 20px
+  &__control
+    position: relative
+    cursor: pointer
+    &-dropdown
+      position: absolute
+      top: 0
+      right: 0
+      display: flex
+      justify-content: space-between
+      align-items: center
+      column-gap: 10px
+      padding: 10px
+    @media (hover: hover)
+      &:hover
+        #{$root}__control-dropdown
+          display: flex
+          top: -10px
+          right: -10px
+          background-color: transparent
+        #{$root}__icon
+          visibility: hidden
+  &__info
+    width: 100%
+    display: flex
+    justify-content: space-between
+    align-items: flex-start
+    &.header
+      &.checked
+        border-bottom: 1px solid #2f2b2b24
+        background-color: aliceblue
+        padding: 10px
+    &.text
+      justify-content: flex-start
+  &__comments-container
+    width: 100%
+    padding-top: 20px
+  &__comments
+    margin-bottom: 10px
+    color: #000
+    &-title
+      &.checked
+        color: #673ab7
+        border-bottom: 1px solid #2f2b2b24
+        background-color: aliceblue
+        font-weight: 600
+        padding: 15px
+        font-size: 1rem
+  &__form
+    margin-bottom: 10px
+    & textarea
+      border: none
+      box-shadow: inset 1px 1px 3px #dfc9ff
+  &__comments-block
+    display: flex
+    justify-content: space-between
+    align-items: start
+    border-bottom: 1px solid rgba(205, 205, 205, 0.18)
+    padding: 20px 10px 20px 20px
+    font: 400 1rem/1.3rem "Times New Roman", sans-serif
+
+.navbar
+  display: flex
+  justify-content: space-between
+  align-items: center
+  width: 100%
+  padding: 15px
+  background-color: #673ab7
+  &__block
+    display: flex
+    justify-content: flex-end
+    align-items: center
+    column-gap: 15px
+  & a
+    color: bisque
+    transition: color 0.5s ease-out
+    margin-bottom: 5px
+    &:active
+      color: red
+    &:visited
+      color: bisque
+    &:hover
+      color: aliceblue
+      transition: color 0.5s ease-out
+.form
+  max-width: 500px
+  margin: 0 auto
+  padding: 15px
+  &__title
+    text-align: center
+    margin-bottom: 20px
+    font: 500 1.3rem/1.5rem "Times New Roman", sans-serif
+  &__label
+    display: block
+    margin-bottom: 10px
+  &__block
+    text-align: left
+  &__buttons
+    display: flex
+    justify-content: flex-start
+    align-items: center
+    column-gap: 20px
+  &__notification
+    color: red
+    &.success
+      color: green
+
+
+.button
+  padding: 10px
+  margin-bottom: 20px
+  text-align: center
+  border: 1px solid #673ab730
+  display: inline-block
+  background-color: transparent
+  color: black
+  transition: background-color 0.5s ease-in-out
+  &.control
+    margin-bottom: 0
+  &:hover
+    background-color: #dfc9ff
+    transition: background-color 0.5s ease-in-out
+  &.comments-btn, &.edit-btn, &.del-btn, &.admin-user-del, &.admin-post-del
+    padding: 5px
+    border: none
+    font-size: 1rem
+    color: #673ab7
+    transition: text-decoration 0.5s ease-in-out
+    &:hover
+      text-decoration: underline
+      background-color: transparent
+
+textarea
+  resize: none
+  scrollbar-width: none
+  white-space: pre-wrap
+  &.comment
+    width: 100%
+input, textarea
+  padding: 10px
+  margin-bottom: 15px
+  width: 100%
+  border: 1px solid #673ab730
+  background-color: transparent
+  color: black
+  transition: box-shadow 0.5s ease-in-out
+  &:focus
+    transition: box-shadow 0.5s ease-in-out
+    box-shadow: inset 1px 1px 3px #673ab7
+.hidden
+  display: none
+
+.admin-content
+  margin: 1rem
+  padding: 1rem
+  border: 1px solid #dee2e6
+  border-radius: 0.375rem
+  &__tab
+    display: flex
+    flex-wrap: wrap
+    gap: 1rem
+    font-size: 1.2rem
+    & > #tab-btn-1:checked~#content-1,
+    & > #tab-btn-2:checked~#content-2
+      display: block
+    & > input[type="radio"]
+      display: none
+    & > input[type="radio"]:checked + label
+      cursor: default
+      font-weight: 600
+      color: #673ab7
+      border-bottom-color: #673ab7
+    & > label
+      padding-top: 0.5rem
+      padding-bottom: 0.5rem
+      cursor: pointer
+      transition: color 0.5s ease-in-out, border-color 0.5s ease-in-out
+      color: #673ab7
+      background: 0 0
+      border-bottom: 0.125rem solid transparent
+      &:hover
+        border-bottom-color: #673ab7
+  &__tab-content
+    display: none
+    width: 100%
+    margin-top: 1rem
+.pagination
+  display: flex
+  justify-content: flex-start
+  column-gap: 10px
+  & button
+    padding: 5px 8px
+    background-color: aliceblue
+    transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out
+    font-size: 1.1rem
+    color: black
+    &:hover
+      background-color: #bc99fc
+      transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out
+      color: white
+    &.checked
+      background-color: #673ab7
+      color: white
+
+

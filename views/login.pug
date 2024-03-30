@@ -1,0 +1,8 @@
+extends layout
+
+block scripts
+  script(type="module", src="/public/js/login.js", defer)
+
+block content
+  div.content
+    +login-template('btn-login', 'Login')

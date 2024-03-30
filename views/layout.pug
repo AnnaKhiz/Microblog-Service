@@ -1,0 +1,57 @@
+mixin link(link, item)
+  a(href=link)= item
+
+mixin add-post-form(idBlock, idButton, buttonName, submitName, inputName, inputDesc)
+  div(id=idBlock).add-post.hidden
+    form(method="POST", action="/user_home/:id").form
+      div.form__block
+        label(for=inputName).form__label Enter title
+        input(id=inputName, type="text", name="name", placeholder="Enter title", required)
+      div.form__block
+        label(for=inputDesc).form__label Type your post
+        textarea(id=inputDesc, name="description", required, placeholder="Type your post here", rows="10" )
+      div.form__buttons
+        button.button(id= submitName, type="submit")= buttonName
+        button.button(id= idButton, type="button") Close
+      div.hidden#notification-block
+        p#notification.form__notification= ''
+
+mixin login-template(idButton, nameButton)
+  form(method="POST")#form.form
+    div.form__block
+      label(for='login').form__label Enter your login
+      input(id='login', type="text", name="login", required, placeder="Enter password")
+    div.form__block
+      label(for='password').form__label Enter your password
+      input(id='password', type="password", name="password", required, placeder="Enter password")
+    button.button(id= idButton, type="submit")= nameButton
+    div.hidden#notification-block
+      p#notification.form__notification= ''
+
+html
+  head
+    link(rel="stylesheet" href="/public/css/style.css")
+    block scripts
+    title Microblog Service
+  body
+    nav#navbar.navbar
+      if locals.role === 'user'
+        div.navbar__block
+          +link(`/`, 'Home Page')
+          +link(`/user_home/${locals.id}`, 'My Posts')
+        div.navbar__block
+          +link('/auth/logout', 'Logout')
+      else if locals.role === 'admin'
+        div.navbar__block
+          +link(`/admin`, 'Admin Page')
+        div.navbar__block
+          +link('/auth/logout', 'Logout')
+      else
+        +link('/', 'Home Page')
+        div.navbar__block
+          +link('/auth/login', 'Login')
+          +link('/auth/register', 'Register')
+
+    div.container
+      block content
+
