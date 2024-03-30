@@ -6,9 +6,9 @@ function generateJWt(payload) {
 	return jwt.sign(payload, JWTKEY, { expiresIn: '24h' })
 }
 
-async function verifyJwt(token, secret) {
+function verifyJwt(token, secret) {
 	try {
-		const result = await jwt.verify(token, secret);
+		const result = jwt.verify(token, secret);
 		console.log(result)
 		return result
 	} catch (e) {

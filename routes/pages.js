@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { Post, User, Comment, Admin, ObjectId } = require('../db')
-const { hashPass, checkPass, generateJWt, verifyJwt } = require('../utils/auth')
+const { hashPass, checkPass, generateJWt } = require('../utils/auth')
 const { AddNewPost, deleteOnePost } = require('../services/apiPosts');
-const { JWTKEY } = require('../config/default');
+const { JWTKEY } = require('../config/default.js');
 const { protectedRoute } = require('../middleware/route');
+const { parserJwt } = require('../middleware/auth');
 
 router.route('/auth/login')
 	.get((_req, res) => res.render('login'))
-	.post(express.urlencoded({ extended: false }), async (req, res, next) => {
+	.post(express.urlencoded({ extended: false }), parserJwt, async (req, res, next) => {
 		const { login, password } = req.body;
 		const admin = await Admin.findOne( { login })
 
@@ -21,6 +22,8 @@ router.route('/auth/login')
 			}
 
 			req._auth = { role: 'admin', userId: admin._id.toString() };
+
+
 			const token = generateJWt(req._auth)
 			res.cookie('token', token, { httpOnly: true })
 			res.send({"id": admin._id.toString(), "role": "admin", "status": 200})
@@ -39,8 +42,10 @@ router.route('/auth/login')
 			}
 
 			req._auth = { role: 'user', userId: user._id.toString() };
+
 			const token = generateJWt(req._auth)
 			res.cookie('token', token, { httpOnly: true })
+
 			res.send({"id": user._id.toString(), "role": "user", "status": 200})
 			next()
 		}
@@ -49,45 +54,48 @@ router.route('/auth/login')
 //REGISTER
 router.route('/auth/register')
 	.get((_req, res) => res.render('register'))
-	.post(express.urlencoded({ extended: false }), async (req, res, next) => {
+	.post(express.urlencoded({ extended: false }), parserJwt, async (req, res, next) => {
 
-		const { body: user } = req;
-		user.posts = []
-		user.comments = []
-		user.password = await hashPass(user.password)
 		try {
-			const newUser = await new User(user)
-			const result = await newUser.save()
-			res.status(201).send({"result": "Registration was successful. Please log in", "status": 201})
-			return result
+			const { body: user } = req;
+
+			const newUser = await new User({
+				...user,
+				posts: [],
+				comments: [],
+				password: await hashPass(user.password)
+			})
+
+			const result = await newUser.save();
+
+			req._auth = { role: 'user', userId: result._id.toString() };
+
+			const token = generateJWt(req._auth);
+			res.cookie('token', token, { httpOnly: true });
+
+			res.redirect(`/user_home/${result._id.toString()}`);
+
 		} catch (error) {
 			if (error.code === 11000) {
-				res.status(401).send({"result": "User with this login already exist", "status": 401})
+				res.status(401).send({"result": "User with this login already exist"})
 			}
 		}
 	});
 
 
-router.get('/', protectedRoute(['user', 'unsigned'], '/admin'), async (req,res,next) => {
-	const { token } = req.cookies;
-
+router.get('/', protectedRoute(['user', 'unsigned'], '/admin'), parserJwt, async (req,res,next) => {
 	const posts = await Post.find().populate('comments');
 	posts.sort((a,b) => b.date.localeCompare(a.date));
 
-	if (token) {
-		const { userId: id, role } = await verifyJwt(token, JWTKEY);
-		role === 'admin' ? res.redirect('/admin') : res.render('index', { id, posts, role })
-
-	} else {
-		res.render('index', { posts });
-	}
+	const { userId: id, role } = req._auth;
+	role === 'admin' ? res.redirect('/admin') : res.render('index', { id, posts, role })
 });
 
 
 // USER HOME
-router.get(`/user_home/:id`, async (req,res,next) => {
-	const { token } = req.cookies;
-	const { userId: id, role } = await verifyJwt(token, JWTKEY);
+router.get(`/user_home/:id`, parserJwt, async (req,res,next) => {
+	const { userId: id, role } = req._auth;
+
 	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author').populate('comments');
 
 	if (!posts) {
@@ -105,55 +113,26 @@ router.route('/auth/logout')
 		res.redirect('/');
 	});
 
-router.post('/user_home/:id', express.urlencoded({ extended: false }), async (req, res, next) => {
-
-	const { body: post } = req;
-
-	const { token } = req.cookies;
-	const { userId: id } = await verifyJwt(token, JWTKEY);
-	post.author = new ObjectId(id);
-	post.date = Date.now().toString();
-	post.comments = [];
-
-	const user = await User.findOne( { _id: new ObjectId(id) })
-
-	const newPost = await new Post(post);
-	const result = await newPost.save();
-
-	const newUser = await User.findOneAndUpdate({ _id: new ObjectId(id) } , { $push: { posts: new ObjectId(result._id) }}, { new: true })
-
-	res.status(201).redirect(`/user_home/${id}`);
-
-});
-
 // ADMIN PAGE
-router.get('/admin', async (req,res) => {
+router.get('/admin', parserJwt, async (req,res) => {
+	const { userId: id, role } = req._auth;
 
-	const { token } = req.cookies;
-	if (!token) {
-		req._auth = {}
+	if (role !== 'admin') {
 		return res.redirect('/auth/login');
+	}
 
-	} else {
-		const { role } = await verifyJwt(token, JWTKEY);
+	const users = await User.find().populate('posts').populate('comments');
+	const posts = await Post.find().populate('author').populate('comments');
+	const comments = await Comment.find().populate('post').populate('user');
 
-		if (role !== 'admin') {
-			res.redirect('/auth/login')
-		}
-
-		const users = await User.find().populate('posts').populate('comments');
-		const posts = await Post.find().populate('author').populate('comments');
-		const comments = await Comment.find().populate('post').populate('user');
-
-		posts.sort((a,b) => b.date.localeCompare(a.date));
-		res.render('admin_home', { users, posts, comments, role });
-	};
+	posts.sort((a,b) => b.date.localeCompare(a.date));
+	res.render('admin_home', { users, posts, comments, role });
 
 })
 
 router.get('/*', (req, res) => {
 	console.log(`Page not found`);
-	res.redirect('/')
+	res.redirect('/');
 })
 
 module.exports = { router }

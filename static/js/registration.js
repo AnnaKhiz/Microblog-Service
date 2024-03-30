@@ -16,19 +16,12 @@ registButton.addEventListener('click', (e) => {
 				"password": inputPass.value
 			})
 		})
-			.then(res => res.json())
 			.then(res => {
-
-				notificationText.innerText = res.result
-				if (res.status === 201) {
+				if (res.status !== 200) {
 					notificationBlock.classList.remove('hidden');
-					notificationText.classList.add('success');
-					setTimeout(() => {
-						window.location.replace('/auth/login')
-					}, 2000)
+					notificationText.innerText = "User with such login already exist";
 				} else {
-					notificationBlock.classList.remove('hidden');
-					notificationText.classList.remove('success');
+					window.location.replace(res.url)
 				}
 			})
 	}

@@ -3,21 +3,13 @@ const { verifyJwt } = require('../utils/auth');
 const { JWTKEY } = require('../config/default');
 
 async function getPosts(req, res, next) {
-	const { token } = req.cookies;
 	const posts = await Post.find();
-
-	if (token) {
-		const { userId: id } = await verifyJwt(token, JWTKEY);
-		res.status(200).send({ id, posts });
-
-	} else {
-		res.status(200).send({ posts });
-	}
+	const { userId: id } = req._auth;
+	id ? res.status(200).send({ id, posts }) : res.status(200).send({ posts });
 }
 
 async function getPostsId(req, res, next) {
-	const { token } = req.cookies;
-	const { userId: id } = await verifyJwt(token, JWTKEY);
+	const { userId: id } = req._auth;
 	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author');
 	res.render('index', { id, posts });
 }
@@ -25,28 +17,33 @@ async function getPostsId(req, res, next) {
 async function addNewPost(req, res, next) {
 	const { body: post } = req;
 
-	const { token } = req.cookies;
-	const { userId: id } = verifyJwt(token, JWTKEY);
-	post.author = new ObjectId(id);
+	console.log(post)
+	const { userId: id } = req._auth;
+	const newPost = await new Post({
+		...post,
+		author: new ObjectId(id),
+		date: Date.now().toString(),
+		comments: []
+	})
 
-	const user = User.find( { _id: new ObjectId(id) });
+	const user = await User.findOne( { _id: new ObjectId(id) })
 
-	const newPost = await new Post(post);
 	const result = await newPost.save();
 
-	res.status(201).redirect(`/`);
+	const newUser = await User.findOneAndUpdate({ _id: new ObjectId(id) } , { $push: { posts: new ObjectId(result._id) }}, { new: true })
+
+	res.status(201).redirect(`/user_home/${id}`);
 }
 
 async function deleteOnePost(req, res, next) {
 	const { date: postDate } = req.params;
 
-	const { token } = req.cookies;
-	const { userId: authorId, role } = await verifyJwt(token, JWTKEY);
+	const { userId: authorId, role } = req._auth;
 
 	if (role === 'admin') {
 		try {
 			const deletedPost = await Post.findOneAndDelete( { date: postDate} );
-			checkExistingPost( deletedPost , res)
+			checkExistingPost(deletedPost, res)
 		} catch (error) {
 			res.status(404).send({"result": "Post did not found"});
 		}
@@ -54,7 +51,7 @@ async function deleteOnePost(req, res, next) {
 	} else {
 		try {
 			const deletedPost = await Post.findOneAndDelete( { date: postDate, author: new ObjectId(authorId)} );
-			checkExistingPost( deletedPost , res)
+			checkExistingPost(deletedPost, res)
 
 		} catch (error) {
 			res.status(404).send({"result": "Post did not found"});
@@ -63,10 +60,9 @@ async function deleteOnePost(req, res, next) {
 }
 
 async function checkExistingPost( deletedPost, res ) {
-	if (deletedPost == '' || deletedPost == undefined) {
-		res.status(404).send({"result": "Post did not found"});
-	}
-	res.status(200).send({"result": "Post was deleted successfully"});
+	deletedPost == '' || deletedPost == undefined
+		? res.status(404).send({"result": "Post did not found"})
+		: res.status(200).send({"result": "Post was deleted successfully"});
 }
 
 async function updateOnePost(req, res, next) {
@@ -78,11 +74,9 @@ async function updateOnePost(req, res, next) {
 			{ name: post.name, description: post.description}
 		);
 
-		if (!updatedPost) {
-			res.status(404).send({"result": "Post did not found"});
-		}
-
-		res.status(200).send({"result": "Post was updated successfully"})
+		!updatedPost
+			? res.status(404).send({"result": "Post did not found"})
+			: res.status(200).send({"result": "Post was updated successfully"});
 
 	} catch (error) {
 		res.status(404).send({"result": "Post did not found"});

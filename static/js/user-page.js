@@ -16,9 +16,21 @@ if (createButton) {
 	createButton.addEventListener('click', (e) => {
 		e.preventDefault();
 		toggleFormVisibility('add', 'add-close');
+
+		const addNewPost = document.getElementById('btn-publish');
+		console.log(addNewPost);
+		const title = document.getElementById('name');
+		const description = document.getElementById('description');
+
+		addNewPost.addEventListener('click', (e) => {
+			e.preventDefault();
+
+			if (checkEmptyFields(title, description)) {
+				addNewPostRequest(title, description)
+			}
+		})
 	});
 }
-
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
@@ -79,6 +91,34 @@ editButton.forEach(button => {
 
 	})
 })
+
+function addNewPostRequest(title, description) {
+	fetch('/api/posts', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			"name": title.value,
+			"description": description.value
+		})
+	})
+		.then(result => {
+			if (result.status !== 200) {
+				notificationBlock.classList.remove('hidden');
+				notificationText.innerText = 'Post didn\'t created';
+			} else {
+				window.location.replace(result.url);
+			}
+		})
+}
+
+function checkEmptyFields(title, description) {
+	if (title.value === '' || description.value === '') {
+		notificationBlock.classList.remove('hidden');
+		notificationText.innerText = 'Empty fields';
+		return
+	}
+	return true
+}
 
 function toggleCommentForm(index, element) {
 	const preview = document.getElementById(`cutted-desc-${index}`);

@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const { addComment, deleteComment } = require('../services/apiComments.js');
+const { parserJwt } = require('../middleware/auth')
 
-router.post('/', addComment);
-router.delete('/:date', deleteComment);
+router.post('/', parserJwt, addComment);
+router.delete('/:date', parserJwt, deleteComment);
 
 module.exports = { router }

@@ -1,15 +1,17 @@
 const router = require('express').Router();
 const { getPosts, getPostsId, addNewPost, deleteOnePost, updateOnePost } = require('../services/apiPosts.js');
+const { parserJwt } = require('../middleware/auth');
 
-router.get('/', getPosts);
 
-router.get('/:id', getPostsId);
+router.get('/', parserJwt, getPosts);
 
-router.post('/', addNewPost);
+router.get('/:id', parserJwt, getPostsId);
+
+router.post('/', parserJwt, addNewPost);
 
 router.patch('/:id', updateOnePost);
 
-router.delete('/:date', deleteOnePost);
+router.delete('/:date', parserJwt, deleteOnePost);
 
 module.exports = { router }
 

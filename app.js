@@ -4,7 +4,6 @@ const { router: pageRouter } = require('./routes/pages.js');
 const { router: contentRouter } = require('./routes/content.js');
 const { router: userRouter } = require('./routes/users.js');
 const { router: commentsRouter } = require('./routes/comments.js');
-const { parserJwt } = require('./middleware/auth')
 
 const express = require('express');
 const server = express();
@@ -17,8 +16,6 @@ server.use(cookieParser());
 
 const jsonBodyParser = express.json();
 server.use(jsonBodyParser);
-
-server.use(parserJwt);
 
 server.use('/public', express.static('static'));
 server.set('view engine', 'pug');

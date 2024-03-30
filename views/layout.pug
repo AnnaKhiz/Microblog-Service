@@ -13,6 +13,8 @@ mixin add-post-form(idBlock, idButton, buttonName, submitName, inputName, inputD
       div.form__buttons
         button.button(id=submitName, type="submit")= buttonName
         button.button(id=idButton, type="button") Close
+      div.hidden#notification-block
+        p#notification.form__notification= ''
 
 mixin login-template(idButton, nameButton)
   form(method="POST")#form.form
