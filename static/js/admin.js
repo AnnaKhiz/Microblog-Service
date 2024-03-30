@@ -1,9 +1,13 @@
+import { deleteCurrentComment, toggleFullPostVisibility } from './modules.js'
+
 const deleteUserButton = [...document.querySelectorAll('.admin-user-del')];
 const deletePostButton = [...document.querySelectorAll('.admin-post-del')];
 const commentsButton = [...document.querySelectorAll('.comments-btn')];
 const commentsContainer = [...document.querySelectorAll('div.comments-container')];
 const deleteCommentButton = [...document.querySelectorAll('.admin-post-del')];
 const postLabelBlock = [...document.querySelectorAll('.content__info.header')];
+
+toggleFullPostVisibility();
 
 commentsButton.forEach((element, index) => {
 	element.addEventListener('click', (e) => {
@@ -16,26 +20,12 @@ commentsButton.forEach((element, index) => {
 		const commentTextBlock = [...document.querySelectorAll('.content__comments-block')];
 		commentTextBlock.forEach(e => e.classList.add('checked'));
 
-		fetch('/api/posts').then(res => res.json()).then(res => {
-			const result = res.posts
-
-			result.forEach((post, i) => {
-				if (post.date === target) {
-
-					document.cookie = `targetpost=${post._id}; expires=0; path=/`
-
-					const deleteComment = [...document.querySelectorAll(`[class*="post-${index}"]`)];
-
-					deleteComment.forEach(el => {
-						el.addEventListener('click', (e) => {
-							e.preventDefault();
-							document.cookie = `targetpost=${post._id}; expires=0; path=/`
-							const createdPostData = e.target.dataset.create;
-							deleteCommentRequest(createdPostData);
-						})
-					})
-				}
-			})
+		const { posts } = getCurrentData()
+		posts.forEach((post, i) => {
+			if (post._id === target) {
+				const deleteCommentIcons = [...document.querySelectorAll(`[class*="post-${index}"]`)];
+				deleteCurrentComment(deleteCommentIcons, post);
+			}
 		})
 
 		toggleButtonText(index, element);
@@ -43,39 +33,29 @@ commentsButton.forEach((element, index) => {
 	})
 })
 
-deletePostButton.forEach(button => {
+deletePostButton.forEach((button, index) => {
 	button.addEventListener('click', (e) => {
 		e.preventDefault();
 		const target = e.target.parentElement.dataset.id
+		const { posts } = getCurrentData();
 
-		deletePostRequest(target)
+		deletePostRequest(posts[index]._id)
 	})
 })
 
-deleteUserButton.forEach(button => {
+deleteUserButton.forEach((button, index) => {
 	button.addEventListener('click', (e) => {
 		e.preventDefault();
 		const target = e.target.dataset.name;
+		const { users } = getCurrentData();
 
-		deleteUserRequest(target);
-
+		deleteUserRequest(users[index]._id);
 	})
 })
 
-function deleteUserRequest(target) {
-	fetch(`/api/users/${target}`, { method: 'DELETE' })
+function deleteUserRequest(id) {
+	fetch(`/api/users/${id}`, { method: 'DELETE' })
 		.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
-}
-
-function deleteCommentRequest(createdPostData) {
-	fetch(`/api/comments/${createdPostData}`, { method: 'DELETE' })
-		.then(result => result.json())
-		.then(result => {
-
-			if (result.status === 200) {
-				window.location.reload()
-			}
-		})
 }
 
 function toggleButtonText(index, element) {
@@ -96,7 +76,21 @@ function toggleButtonText(index, element) {
 	}
 }
 
-function deletePostRequest(target) {
-	fetch(`/api/posts/${target}`, { method: 'DELETE' })
+function deletePostRequest(id) {
+	fetch(`/api/posts/${id}`, { method: 'DELETE' })
 		.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
+}
+
+function getCurrentData() {
+	const scriptTag = document.querySelector('script[src$="/public/js/admin.js"]');
+
+	if (!scriptTag) {
+		return
+	}
+	const usersData = scriptTag.getAttribute('data-users');
+	const postsData = scriptTag.getAttribute('data-posts');
+	const users = JSON.parse(usersData);
+	const posts = JSON.parse(postsData);
+
+	return { users, posts }
 }

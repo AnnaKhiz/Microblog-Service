@@ -11,8 +11,8 @@ mixin add-post-form(idBlock, idButton, buttonName, submitName, inputName, inputD
         label(for=inputDesc).form__label Type your post
         textarea(id=inputDesc, name="description", required, placeholder="Type your post here", rows="10" )
       div.form__buttons
-        button.button(id=submitName, type="submit")= buttonName
-        button.button(id=idButton, type="button") Close
+        button.button(id= submitName, type="submit")= buttonName
+        button.button(id= idButton, type="button") Close
       div.hidden#notification-block
         p#notification.form__notification= ''
 

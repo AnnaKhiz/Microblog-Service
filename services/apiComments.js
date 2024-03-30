@@ -28,17 +28,14 @@ async function addComment(req, res, next) {
 
 async function deleteComment(req, res, next) {
 	try {
-		const { date } = req.params;
+		const { id: commentId } = req.params;
 		const { userId: id, role } = req._auth;
-		const { targetpost: postId } = req.cookies;
 
-		if (!postId) {
+		if (!commentId) {
 			return res.status(400).send({ "result": 'Target post ID is missing in cookies', "status": 400 });
 		}
 
-		role === 'admin'
-			? await Comment.findOneAndDelete({ post: new ObjectId(postId), date: date})
-			: await Comment.findOneAndDelete({ user: new ObjectId(id), post: new ObjectId(postId), date: date});
+		await Comment.findOneAndDelete({ _id: new ObjectId(commentId)});
 
 		res.send({"result": "Comment was deleted", "status": 200});
 	} catch (error) {

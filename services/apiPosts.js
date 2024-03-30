@@ -17,7 +17,6 @@ async function getPostsId(req, res, next) {
 async function addNewPost(req, res, next) {
 	const { body: post } = req;
 
-	console.log(post)
 	const { userId: id } = req._auth;
 	const newPost = await new Post({
 		...post,
@@ -36,33 +35,13 @@ async function addNewPost(req, res, next) {
 }
 
 async function deleteOnePost(req, res, next) {
-	const { date: postDate } = req.params;
+	const { id } = req.params;
 
-	const { userId: authorId, role } = req._auth;
+	const result = await Post.findOneAndDelete( { _id: new ObjectId(id)} );
 
-	if (role === 'admin') {
-		try {
-			const deletedPost = await Post.findOneAndDelete( { date: postDate} );
-			checkExistingPost(deletedPost, res)
-		} catch (error) {
-			res.status(404).send({"result": "Post did not found"});
-		}
-
-	} else {
-		try {
-			const deletedPost = await Post.findOneAndDelete( { date: postDate, author: new ObjectId(authorId)} );
-			checkExistingPost(deletedPost, res)
-
-		} catch (error) {
-			res.status(404).send({"result": "Post did not found"});
-		}
-	}
-}
-
-async function checkExistingPost( deletedPost, res ) {
-	deletedPost == '' || deletedPost == undefined
-		? res.status(404).send({"result": "Post did not found"})
-		: res.status(200).send({"result": "Post was deleted successfully"});
+	!result
+		? res.status(404).send({ "result": "Post not found" })
+		: res.status(200).send({ "result": "Post was deleted successfully" });
 }
 
 async function updateOnePost(req, res, next) {

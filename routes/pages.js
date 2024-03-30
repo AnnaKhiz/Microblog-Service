@@ -83,7 +83,7 @@ router.route('/auth/register')
 	});
 
 
-router.get('/', protectedRoute(['user', 'unsigned'], '/admin'), parserJwt, async (req,res,next) => {
+router.get('/', parserJwt, protectedRoute(['user', 'unsigned'], '/admin'), async (req,res,next) => {
 	const posts = await Post.find().populate('comments');
 	posts.sort((a,b) => b.date.localeCompare(a.date));
 
@@ -109,7 +109,6 @@ router.get(`/user_home/:id`, parserJwt, async (req,res,next) => {
 router.route('/auth/logout')
 	.get((_req, res) => {
 		res.clearCookie('token');
-		res.clearCookie('targetpost');
 		res.redirect('/');
 	});
 

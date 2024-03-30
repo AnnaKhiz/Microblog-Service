@@ -11,7 +11,7 @@ router.post('/', parserJwt, addNewPost);
 
 router.patch('/:id', updateOnePost);
 
-router.delete('/:date', parserJwt, deleteOnePost);
+router.delete('/:id', parserJwt, deleteOnePost);
 
 module.exports = { router }
 

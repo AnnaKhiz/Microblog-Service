@@ -1,3 +1,5 @@
+import { checkEmptyFields } from './modules.js';
+
 const registButton = document.getElementById('btn-register');
 const inputLogin = document.getElementById('login');
 const inputPass = document.getElementById('password');
@@ -7,7 +9,7 @@ const notificationText = document.getElementById('notification');
 registButton.addEventListener('click', (e) => {
 	e.preventDefault();
 
-	if (checkEmptyFields()) {
+	if (checkEmptyFields(inputLogin, inputPass, notificationBlock, notificationText)) {
 		fetch('/auth/register', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -26,12 +28,3 @@ registButton.addEventListener('click', (e) => {
 			})
 	}
 })
-
-function checkEmptyFields() {
-	if (inputLogin.value.replaceAll(' ', '') === '' || inputPass.value.replaceAll(' ', '') === '') {
-		notificationBlock.classList.remove('hidden');
-		notificationText.innerText = 'Empty fields';
-		return
-	}
-	return true
-}

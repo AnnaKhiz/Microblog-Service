@@ -1,8 +1,7 @@
 extends layout
 
 block scripts
-  script(type="module", src="/public/js/index.js", defer)
-  script(type="module", src="/public/js/user-page.js", defer)
+  script(type="module", src="/public/js/user-page.js", data-posts=JSON.stringify(locals.posts), defer)
 
 block content
   div.content
@@ -21,13 +20,13 @@ block content
             if locals.id
               div.content__control
                 img(src="/public/img/icons24.png", alt="icon", class="content__icon")
-                div.content__control-dropdown.hidden(data-id= post.date)
+                div.content__control-dropdown.hidden(data-id= post.id)
                   button.comments-btn.button.control Comments
                     if locals.id === post.author.id
                       button.edit-btn.button.control Edit
                       button.del-btn.button.control Delete
             else
-              div.content__control(data-id= post.date)
+              div.content__control(data-id= post.id)
                 button.comments-btn.button.control Comments
           div.content__info.text
             p(id= `cutted-desc-${i}`).content__description= post.description.length > 100 ? post.description.slice(0, 100) + ` ...` : post.description

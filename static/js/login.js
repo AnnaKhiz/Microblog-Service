@@ -1,13 +1,16 @@
+import { checkEmptyFields } from './modules.js'
+
 const loginButton = document.getElementById('btn-login');
 const inputLogin = document.getElementById('login');
 const inputPass = document.getElementById('password');
 const notificationBlock = document.getElementById('notification-block');
 const notificationText = document.getElementById('notification');
 
+
 loginButton.addEventListener('click', (e) => {
 	e.preventDefault();
 
-	if (checkEmptyFields()) {
+	if (checkEmptyFields(inputLogin, inputPass, notificationBlock, notificationText)) {
 		fetch('/auth/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -32,11 +35,3 @@ loginButton.addEventListener('click', (e) => {
 	}
 })
 
-function checkEmptyFields() {
-	if (inputLogin.value.replaceAll(' ', '') === '' || inputPass.value.replaceAll(' ', '') === '') {
-		notificationBlock.classList.remove('hidden');
-		notificationText.innerText = 'Empty fields';
-		return false
-	}
-	return true
-}
