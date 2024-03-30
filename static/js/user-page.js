@@ -21,7 +21,6 @@ if (createButton) {
 		toggleFormVisibility('add', 'add-close');
 
 		const addNewPost = document.getElementById('btn-publish');
-		console.log(addNewPost);
 		const title = document.getElementById('name');
 		const description = document.getElementById('description');
 
@@ -165,7 +164,7 @@ function addNewCommentQuery(post, sendCommentButton, textCommentField) {
 				"text": textCommentField.value,
 			})
 		})
-			.then(res => res.status === 201 ? window.location.reload() : console.log('Commenting error'))
+			.then(res => res.status === 201 ? window.location.reload() : console.log('Comment did not added'))
 }
 
 function deletePostQuery(id) {
@@ -189,7 +188,7 @@ function editCurrentPostQuery(post, inputTitle, inputDescription, saveButton) {
 				"description": inputDescription.value
 			})
 		})
-			.then(res => res.status === 200 ? window.location.reload() : console.log('Editing error'));
+			.then(res => res.status === 200 ? window.location.reload() : console.log('Post did not edit'));
 	};
 
 	saveButton.addEventListener('click', saveButtonHandler);

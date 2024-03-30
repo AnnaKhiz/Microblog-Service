@@ -55,7 +55,7 @@ deleteUserButton.forEach((button, index) => {
 
 function deleteUserRequest(id) {
 	fetch(`/api/users/${id}`, { method: 'DELETE' })
-		.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
+		.then(res => res.status === 200 ? window.location.reload() : console.log('User did not delete'))
 }
 
 function toggleButtonText(index, element) {
@@ -78,7 +78,7 @@ function toggleButtonText(index, element) {
 
 function deletePostRequest(id) {
 	fetch(`/api/posts/${id}`, { method: 'DELETE' })
-		.then(res => res.status === 200 ? window.location.reload() : console.log('Deliting error'))
+		.then(res => res.status === 200 ? window.location.reload() : console.log('Post did not delete'))
 }
 
 function getCurrentData() {

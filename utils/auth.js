@@ -9,10 +9,8 @@ function generateJWt(payload) {
 function verifyJwt(token, secret) {
 	try {
 		const result = jwt.verify(token, secret);
-		console.log(result)
 		return result
 	} catch (e) {
-		console.log(`Error in verify JWT: ${e}`)
 		return null
 	}
 }

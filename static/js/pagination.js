@@ -1,5 +1,4 @@
 const items = document.querySelectorAll('.content__block');
-console.log(items)
 const itemsPerPage = 10;
 let checkedPage = 0;
 
