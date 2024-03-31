@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { JWTKEY } = require('../config/default');
+const { jwtKey } = require('config');
 
 function generateJWt(payload) {
-	return jwt.sign(payload, JWTKEY, { expiresIn: '24h' })
+	return jwt.sign(payload, jwtKey, { expiresIn: '24h' });
 }
 
 function verifyJwt(token, secret) {

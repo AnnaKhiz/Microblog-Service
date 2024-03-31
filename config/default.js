@@ -1,9 +1,5 @@
-const PORT = process.env.PORT ? process.env.PORT : 3001;
-const DBURL = process.env.DBURL ? process.env.DBURL : '';
-const JWTKEY = process.env.JWTKEY ? process.env.JWTKEY : Math.random().toString();
-
 module.exports = {
-	PORT,
-	DBURL,
-	JWTKEY
-}
+	port: process.env.PORT || 3001,
+	dbUrl: process.env.DBURL || '',
+	jwtKey: process.env.JWTKEY || Math.random().toString()
+};

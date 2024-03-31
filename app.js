@@ -1,5 +1,6 @@
 require('dotenv').config();
-const sass = require('./utils/sass.js')
+const { port } = require('config');
+
 const { router: pageRouter } = require('./routes/pages.js');
 const { router: contentRouter } = require('./routes/content.js');
 const { router: userRouter } = require('./routes/users.js');
@@ -8,10 +9,9 @@ const { router: commentsRouter } = require('./routes/comments.js');
 const express = require('express');
 const server = express();
 
-const { PORT } = require('./config/default');
 const cookieParser = require('cookie-parser');
 
-server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+server.listen(port, () => console.log(`Server started on port ${port}`));
 server.use(cookieParser());
 
 const jsonBodyParser = express.json();

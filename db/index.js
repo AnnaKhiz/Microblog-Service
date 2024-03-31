@@ -1,5 +1,5 @@
-const { DBURL } = require('../config/default');
-const { MongoClient, ObjectId } = require('mongodb');
+const { dbUrl } = require('config');
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const AdminSchema = new mongoose.Schema({
@@ -92,7 +92,7 @@ const Comment = mongoose.model('comments', CommentSchema);
 
 async function init() {
 	try {
-		await mongoose.connect(DBURL, { dbName: 'microblogService' })
+		await mongoose.connect(dbUrl, { dbName: 'microblogService' })
 		console.log('Mongo DB connected');
 	} catch (error) {
 		console.log('Mongo DB did not connected');
