@@ -4,7 +4,8 @@
   "description": "microblog-service",
   "main": "app.js",
   "scripts": {
-    "start": "node ./app.js"
+    "start": "node ./app.js",
+    "debug": "nodemon --inspect ./app.js"
   },
   "repository": {
     "type": "git",
