@@ -7,6 +7,8 @@ const { JWTKEY } = require('../config/default.js');
 const { protectedRoute } = require('../middleware/route');
 const { parserJwt } = require('../middleware/auth');
 
+//! на логін і реджистер не потрібно парсити токен, бо його там скоріше за все не буде - хіба що ти хочеш НЕ ПУСКАТИ
+//! на сторінку логіна тих хто вже залогінен...
 router.route('/auth/login')
 	.get((_req, res) => res.render('login'))
 	.post(express.urlencoded({ extended: false }), parserJwt, async (req, res, next) => {
@@ -20,7 +22,10 @@ router.route('/auth/login')
 				return res.send({"result": "Wrong password", "status": 404})
 			}
 
-			req._auth = { role: 'admin', userId: admin._id.toString() };
+			// можна не запихувати в ріквест, якщо ти з цього просто робиш токен і відправляєш одразу
+			const authData = { role: 'admin', userId: admin._id.toString() };
+			const token = generateJWt(authData);
+			res.cookie('token', token, { httpOnly: true });
 
 
 			const token = generateJWt(req._auth)
@@ -40,10 +45,9 @@ router.route('/auth/login')
 				return res.send({"result": "Wrong password", "status": 404})
 			}
 
-			req._auth = { role: 'user', userId: user._id.toString() };
-
-			const token = generateJWt(req._auth)
-			res.cookie('token', token, { httpOnly: true })
+			const authData = { role: 'user', userId: user._id.toString() };
+			const token = generateJWt(authData);
+			res.cookie('token', token, { httpOnly: true });
 
 			res.send({"id": user._id.toString(), "role": "user", "status": 200})
 			next()
@@ -115,6 +119,8 @@ router.route('/auth/logout')
 router.get('/admin', parserJwt, async (req,res) => {
 	const { userId: id, role } = req._auth;
 
+	// оце по-хорошому має бути мідлвером - перевірка ролі і заборона доступу.
+	// Ти навіть спробувала взяти мій protectedRoute, але чогось не дожала до кінця...
 	if (role !== 'admin') {
 		return res.redirect('/auth/login');
 	}

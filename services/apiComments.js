@@ -31,6 +31,7 @@ async function deleteComment(req, res, next) {
 		const { id: commentId } = req.params;
 		const { userId: id, role } = req._auth;
 
+		//! такі речі краще ставити на валідейшен мідлвер, все таки )
 		if (!commentId) {
 			return res.status(400).send({ "result": 'Target post ID is missing in cookies', "status": 400 });
 		}

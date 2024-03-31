@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { getPosts, getPostsByAuthorId, addNewPost, deleteOnePost, updateOnePost } = require('../services/apiPosts.js');
 const { parserJwt } = require('../middleware/auth.js');
 
+//! parserJwt не сильно забороняє доступ до ресурса - зверни увагу
 
 router.get('/', parserJwt, getPosts);
 
