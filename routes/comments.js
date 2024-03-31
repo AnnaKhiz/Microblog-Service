@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { addComment, deleteComment } = require('../services/apiComments.js');
-const { parserJwt } = require('../middleware/auth')
+const { parserJwt } = require('../middleware/auth');
 
 router.post('/', parserJwt, addComment);
 
@@ -8,4 +8,4 @@ router.post('/', parserJwt, addComment);
 //!! я можу видалити комент просто пославши постманом ріквест з айдішником )
 router.delete('/:id', parserJwt, deleteComment);
 
-module.exports = { router }
+module.exports = { router };

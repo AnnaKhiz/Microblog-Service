@@ -22,5 +22,6 @@ module.exports = {
   ignorePatterns: ['/static/*'], // linting only node part now
   rules: {
     semi: ['warn', 'always'],
+    quotes: ['warn', 'single']
   },
 };

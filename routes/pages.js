@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Post, User, Comment, Admin, ObjectId } = require('../db')
-const { hashPass, checkPass, generateJWt } = require('../utils/auth')
-const { AddNewPost, deleteOnePost } = require('../services/apiPosts');
-const { JWTKEY } = require('../config/default.js');
+const { Post, User, Comment, Admin, ObjectId } = require('../db');
+const { hashPass, checkPass, generateJWt } = require('../utils/auth');
 const { protectedRoute } = require('../middleware/route');
 const { parserJwt } = require('../middleware/auth');
 
@@ -11,15 +9,15 @@ const { parserJwt } = require('../middleware/auth');
 //! на сторінку логіна тих хто вже залогінен...
 router.route('/auth/login')
 	.get((_req, res) => res.render('login'))
-	.post(express.urlencoded({ extended: false }), parserJwt, async (req, res, next) => {
+	.post(express.urlencoded({ extended: false }), async (req, res, next) => {
 		const { login, password } = req.body;
-		const admin = await Admin.findOne( { login })
+		const admin = await Admin.findOne( { login });
 
 		if (admin) {
 			const result = await checkPass(password, admin.password);
 
 			if (!result) {
-				return res.send({"result": "Wrong password", "status": 404})
+				return res.send({'result': 'Wrong password', 'status': 404});
 			}
 
 			// можна не запихувати в ріквест, якщо ти з цього просто робиш токен і відправляєш одразу
@@ -27,37 +25,32 @@ router.route('/auth/login')
 			const token = generateJWt(authData);
 			res.cookie('token', token, { httpOnly: true });
 
-
-			const token = generateJWt(req._auth)
-			res.cookie('token', token, { httpOnly: true })
-			res.send({"id": admin._id.toString(), "role": "admin", "status": 200})
+			res.send({'id': admin._id.toString(), 'role': 'admin', 'status': 200});
 
 		} else {
-			const user = await User.findOne( { login })
-
+			const user = await User.findOne( { login });
 			if (!user) {
-				return res.send({"result": "User with such login not found", "status": 404})
+				return res.send({'result': 'User with such login not found', 'status': 404});
 			}
 
 			const result = await checkPass(password, user.password);
-
 			if (!result) {
-				return res.send({"result": "Wrong password", "status": 404})
+				return res.send({'result': 'Wrong password', 'status': 404});
 			}
 
 			const authData = { role: 'user', userId: user._id.toString() };
 			const token = generateJWt(authData);
 			res.cookie('token', token, { httpOnly: true });
 
-			res.send({"id": user._id.toString(), "role": "user", "status": 200})
-			next()
+			res.send({'id': user._id.toString(), 'role': 'user', 'status': 200});
+			next();
 		}
 	});
 
 //REGISTER
 router.route('/auth/register')
 	.get((_req, res) => res.render('register'))
-	.post(express.urlencoded({ extended: false }), parserJwt, async (req, res, next) => {
+	.post(express.urlencoded({ extended: false }), async (req, res) => {
 
 		try {
 			const { body: user } = req;
@@ -67,7 +60,7 @@ router.route('/auth/register')
 				posts: [],
 				comments: [],
 				password: await hashPass(user.password)
-			})
+			});
 
 			const result = await newUser.save();
 
@@ -80,33 +73,33 @@ router.route('/auth/register')
 
 		} catch (error) {
 			if (error.code === 11000) {
-				res.status(401).send({"result": "User with this login already exist"})
+				res.status(401).send({'result': 'User with this login already exist'});
 			}
 		}
 	});
 
 
-router.get('/', parserJwt, protectedRoute(['user', 'unsigned'], '/admin'), async (req,res,next) => {
+router.get('/', parserJwt, protectedRoute(['user', 'unsigned'], '/admin'), async (req, res) => {
 	const posts = await Post.find().populate('comments');
 	posts.sort((a,b) => b.date.localeCompare(a.date));
 
 	const { userId: id, role } = req._auth;
-	role === 'admin' ? res.redirect('/admin') : res.render('index', { id, posts, role })
+	role === 'admin' ? res.redirect('/admin') : res.render('index', { id, posts, role });
 });
 
 
 // USER HOME
-router.get(`/user_home/:id`, parserJwt, async (req,res,next) => {
+router.get('/user_home/:id', parserJwt, async (req, res) => {
 	const { userId: id, role } = req._auth;
 
 	const posts = await Post.find().find( { author: new ObjectId(id)}).populate('author').populate('comments');
 
 	if (!posts) {
-		res.send({"result": "No posts"});
+		res.send({'result': 'No posts'});
 	}
 	posts.sort((a,b) => b.date.localeCompare(a.date));
 	res.render('index', { id, posts, role });
-})
+});
 
 //LOGOUT
 router.route('/auth/logout')
@@ -117,7 +110,7 @@ router.route('/auth/logout')
 
 // ADMIN PAGE
 router.get('/admin', parserJwt, async (req,res) => {
-	const { userId: id, role } = req._auth;
+	const { role } = req._auth;
 
 	// оце по-хорошому має бути мідлвером - перевірка ролі і заборона доступу.
 	// Ти навіть спробувала взяти мій protectedRoute, але чогось не дожала до кінця...
@@ -132,10 +125,10 @@ router.get('/admin', parserJwt, async (req,res) => {
 	posts.sort((a,b) => b.date.localeCompare(a.date));
 	res.render('admin_home', { users, posts, comments, role });
 
-})
+});
 
 router.get('/*', (req, res) => {
 	res.redirect('/');
-})
+});
 
-module.exports = { router }
+module.exports = { router };

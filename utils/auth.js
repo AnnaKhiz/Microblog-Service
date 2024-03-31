@@ -9,9 +9,9 @@ function generateJWt(payload) {
 function verifyJwt(token, secret) {
 	try {
 		const result = jwt.verify(token, secret);
-		return result
+		return result;
 	} catch (e) {
-		return null
+		return null;
 	}
 }
 
@@ -24,9 +24,9 @@ async function hashPass(textPass) {
 
 async function checkPass(textPass, hashedPass) {
 	try {
-		return !!(await bcrypt.compare(textPass, hashedPass))
+		return !!(await bcrypt.compare(textPass, hashedPass));
 	} catch (e) {
-		return false
+		return false;
 	}
 }
 
@@ -35,4 +35,4 @@ module.exports = {
 	checkPass,
 	generateJWt,
 	verifyJwt
-}
+};

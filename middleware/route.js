@@ -7,8 +7,8 @@ const protectedRoute = (allowedRoles = [], redirectTo = '/auth/login') => functi
 	}
 
 	next();
-}
+};
 
 module.exports = {
 	protectedRoute
-}
+};
