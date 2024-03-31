@@ -2,7 +2,7 @@ require('dotenv').config();
 const { port } = require('config');
 
 const { router: pageRouter } = require('./routes/pages.js');
-const { router: contentRouter } = require('./routes/content.js');
+const { router: contentRouter } = require('./routes/posts.js');
 const { router: userRouter } = require('./routes/users.js');
 const { router: commentsRouter } = require('./routes/comments.js');
 
