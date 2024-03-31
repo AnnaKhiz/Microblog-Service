@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { jwtKey } = require('config');
+const { jwtKey, jwtExpires } = require('config');
 
 function generateJWt(payload) {
-	return jwt.sign(payload, jwtKey, { expiresIn: '24h' });
+	return jwt.sign(payload, jwtKey, { expiresIn: jwtExpires });
 }
 
 function verifyJwt(token, secret) {
