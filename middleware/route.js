@@ -1,9 +1,7 @@
-
-
-const protectedRoute = (allowedRoles = [], redirectTo = '/auth/login') => function (req, resp, next) {
+const protectedRoute = (allowedRoles = [], redirectTo = '/auth/login') => function (req, res, next) {
 	const { role = 'unsigned' } = req._auth || {};
 	if (!allowedRoles.includes(role)) {
-		return resp.redirect(redirectTo);
+		return res.redirect(redirectTo);
 	}
 
 	next();

@@ -1,18 +1,17 @@
 const router = require('express').Router();
 const { getPosts, getPostsByAuthorId, addNewPost, deleteOnePost, updateOnePost } = require('../services/apiPosts.js');
 const { parserJwt } = require('../middleware/auth.js');
+const { protectedRoute } = require('../middleware/route.js');
 
-//! parserJwt не сильно забороняє доступ до ресурса - зверни увагу
+router.get('/', parserJwt, protectedRoute(['user', 'unsigned'], '/auth/login'), getPosts);
 
-router.get('/', parserJwt, getPosts);
+router.get('/:id', parserJwt, protectedRoute(['user', 'admin'], '/auth/login'), getPostsByAuthorId);
 
-router.get('/:id', parserJwt, getPostsByAuthorId);
+router.post('/', parserJwt, protectedRoute(['user'], '/auth/login'), addNewPost);
 
-router.post('/', parserJwt, addNewPost);
+router.patch('/:id', parserJwt, protectedRoute(['user'], '/auth/login'), updateOnePost);
 
-router.patch('/:id', updateOnePost);
-
-router.delete('/:id', parserJwt, deleteOnePost);
+router.delete('/:id', parserJwt, protectedRoute(['user', 'admin'], '/auth/login'), deleteOnePost);
 
 module.exports = { router };
 

@@ -5,8 +5,6 @@ const { hashPass, checkPass, generateJWt } = require('../utils/auth');
 const { protectedRoute } = require('../middleware/route');
 const { parserJwt } = require('../middleware/auth');
 
-//! на логін і реджистер не потрібно парсити токен, бо його там скоріше за все не буде - хіба що ти хочеш НЕ ПУСКАТИ
-//! на сторінку логіна тих хто вже залогінен...
 router.route('/auth/login')
 	.get((_req, res) => res.render('login'))
 	.post(express.urlencoded({ extended: false }), async (req, res, next) => {
@@ -20,7 +18,6 @@ router.route('/auth/login')
 				return res.send({'result': 'Wrong password', 'status': 404});
 			}
 
-			// можна не запихувати в ріквест, якщо ти з цього просто робиш токен і відправляєш одразу
 			const authData = { role: 'admin', userId: admin._id.toString() };
 			const token = generateJWt(authData);
 			res.cookie('token', token, { httpOnly: true });
@@ -109,14 +106,8 @@ router.route('/auth/logout')
 	});
 
 // ADMIN PAGE
-router.get('/admin', parserJwt, async (req,res) => {
+router.get('/admin', parserJwt, protectedRoute(['admin'], '/auth/login'), async (req,res) => {
 	const { role } = req._auth;
-
-	// оце по-хорошому має бути мідлвером - перевірка ролі і заборона доступу.
-	// Ти навіть спробувала взяти мій protectedRoute, але чогось не дожала до кінця...
-	if (role !== 'admin') {
-		return res.redirect('/auth/login');
-	}
 
 	const users = await User.find().populate('posts').populate('comments');
 	const posts = await Post.find().populate('author').populate('comments');

@@ -1,0 +1,11 @@
+function validation(req, resp, next) {
+	const { id: commentId } = req.params;
+
+	if (!commentId) {
+		return res.status(400).send({ 'result': 'Target post ID is missing in cookies', 'status': 400 });
+	}
+	req.commentId = commentId;
+	next();
+}
+
+module.exports = { validation };

@@ -26,12 +26,7 @@ async function addComment(req, res, next) {
 
 async function deleteComment(req, res, next) {
 	try {
-		const { id: commentId } = req.params;
-
-		//! такі речі краще ставити на валідейшен мідлвер, все таки )
-		if (!commentId) {
-			return res.status(400).send({ 'result': 'Target post ID is missing in cookies', 'status': 400 });
-		}
+		const commentId = req.commentId;
 
 		await Comment.findOneAndDelete({ _id: new ObjectId(commentId)});
 

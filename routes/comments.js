@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const { addComment, deleteComment } = require('../services/apiComments.js');
 const { parserJwt } = require('../middleware/auth');
+const { protectedRoute } = require('../middleware/route');
+const { validation } = require('../middleware/validation');
 
-router.post('/', parserJwt, addComment);
+router.post('/', parserJwt, protectedRoute(['user'], '/auth/login'), addComment);
 
-//!!!!! parserJwt просто парсить авторізаційні дані, і НІЯК не захищає роут від доступу якщо даних немає ))
-//!! я можу видалити комент просто пославши постманом ріквест з айдішником )
-router.delete('/:id', parserJwt, deleteComment);
+router.delete('/:id', parserJwt, protectedRoute(['user', 'admin'], '/auth/login'), validation, deleteComment);
 
 module.exports = { router };
