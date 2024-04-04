@@ -4,7 +4,8 @@
   "description": "microblog-service",
   "main": "app.js",
   "scripts": {
-    "start": "node ./app.js"
+    "start": "node ./app.js",
+    "debug": "nodemon --inspect ./app.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "bcrypt": "^5.1.1",
+    "config": "^3.3.11",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",

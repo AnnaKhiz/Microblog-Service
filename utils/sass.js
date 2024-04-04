@@ -19,4 +19,4 @@ sass.render({
 	}
 });
 
-module.exports = sass
+module.exports = sass;

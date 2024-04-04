@@ -1,15 +1,15 @@
-const { JWTKEY } = require('../config/default')
-const { verifyJwt, generateJWt } = require('../utils/auth');
+const { jwtKey } = require('config');
+const { verifyJwt } = require('../utils/auth');
 
 function parserJwt(req, resp, next) {
 	const { token } = req.cookies;
 	if (token) {
-		const payload = verifyJwt(token, JWTKEY);
-		req._auth = payload;
+		const payload = verifyJwt(token, jwtKey);
+		req._auth = payload || {};
 	} else {
-		req._auth = {}
+		req._auth = {};
 	}
 	next();
 }
 
-module.exports = { parserJwt }
+module.exports = { parserJwt };

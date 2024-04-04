@@ -1,17 +1,17 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { JWTKEY } = require('../config/default');
+const { jwtKey, jwtExpires } = require('config');
 
 function generateJWt(payload) {
-	return jwt.sign(payload, JWTKEY, { expiresIn: '24h' })
+	return jwt.sign(payload, jwtKey, { expiresIn: jwtExpires });
 }
 
 function verifyJwt(token, secret) {
 	try {
 		const result = jwt.verify(token, secret);
-		return result
+		return result;
 	} catch (e) {
-		return null
+		return null;
 	}
 }
 
@@ -24,9 +24,9 @@ async function hashPass(textPass) {
 
 async function checkPass(textPass, hashedPass) {
 	try {
-		return !!(await bcrypt.compare(textPass, hashedPass))
+		return !!(await bcrypt.compare(textPass, hashedPass));
 	} catch (e) {
-		return false
+		return false;
 	}
 }
 
@@ -35,4 +35,4 @@ module.exports = {
 	checkPass,
 	generateJWt,
 	verifyJwt
-}
+};

@@ -1,11 +1,11 @@
-const { DBURL } = require('../config/default');
-const { MongoClient, ObjectId } = require('mongodb');
+const { dbUrl } = require('config');
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const AdminSchema = new mongoose.Schema({
 	login: { type: String, unique: true },
 	password: String
-})
+});
 
 const PostSchema = new mongoose.Schema({
 	name: { type: String, unique: true },
@@ -19,7 +19,7 @@ const PostSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'comments'
 	}]
-})
+});
 
 const UserSchema = new mongoose.Schema({
 	login: { type: String, unique: true },
@@ -45,7 +45,7 @@ const CommentSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'posts'
 	}
-})
+});
 
 
 PostSchema.pre('findOneAndDelete', async function(next) {
@@ -55,7 +55,7 @@ PostSchema.pre('findOneAndDelete', async function(next) {
 		const post = await Post.findOne(query);
 
 		if (!post) {
-			return
+			return;
 		}
 
 		await mongoose.model('comments').deleteMany( { _id: { $in: post.comments }} );
@@ -73,7 +73,7 @@ UserSchema.pre('findOneAndDelete', async function(next) {
 		const user = await User.findOne(query);
 
 		if (!user) {
-			return
+			return;
 		}
 
 		await mongoose.model('posts').deleteMany({ _id: { $in: user.posts } });
@@ -81,7 +81,7 @@ UserSchema.pre('findOneAndDelete', async function(next) {
 
 		next();
 	} catch (error) {
-		next(error)
+		next(error);
 	}
 });
 
@@ -92,7 +92,7 @@ const Comment = mongoose.model('comments', CommentSchema);
 
 async function init() {
 	try {
-		await mongoose.connect(DBURL, { dbName: 'microblogService' })
+		await mongoose.connect(dbUrl, { dbName: 'microblogService' });
 		console.log('Mongo DB connected');
 	} catch (error) {
 		console.log('Mongo DB did not connected');
@@ -100,7 +100,7 @@ async function init() {
 		process.exit(1);
 	}
 }
-init()
+init();
 
 module.exports = {
 	ObjectId,
@@ -108,4 +108,4 @@ module.exports = {
 	User,
 	Comment,
 	Admin
-}
+};
